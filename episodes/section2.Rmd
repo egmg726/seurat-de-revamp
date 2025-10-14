@@ -1,0 +1,239 @@
+---
+title: 'Section 2: Differential Gene Expression when dealing with two treatment conditions'
+teaching: 10
+exercises: 2
+---
+
+:::::::::::::::::::::::::::::::::::::: questions 
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::: objectives
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+
+
+library(Seurat)
+library(SeuratData)
+library(tidyverse)
+library(DESeq2)
+library(patchwork)
+library(pheatmap)
+library(grid)
+library(metap)
+
+set.seed(4242) # Set Seed for Reproducibility
+
+load('data/ifnb.RData')
+ifnb$percent.mt <- PercentageFeatureSet(object = ifnb, pattern = "^MT-") 
+ifnb.filtered <- subset(ifnb, subset = nCount_RNA > 800 & 
+                          nCount_RNA < 5000 &
+                          nFeature_RNA > 200 &
+                          nFeature_RNA < 1200 &
+                          percent.mt < 5)
+ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim)
+ifnb.filtered <- NormalizeData(ifnb.filtered)
+ifnb.filtered <- FindVariableFeatures(ifnb.filtered)
+ifnb.filtered <- ScaleData(ifnb.filtered)
+ifnb.filtered <- RunPCA(ifnb.filtered)
+ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = 'pca')
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = HarmonyIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "harmony")
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, reduction.name = "umap.harmony")
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = CCAIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "integrated.cca")
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:20, reduction.name = "umap.cca")
+ifnb.filtered <- FindNeighbors(ifnb.filtered, reduction = "integrated.cca", dims = 1:20)
+ifnb.filtered <- FindClusters(ifnb.filtered, resolution = 0.5)
+ifnb.filtered <- JoinLayers(ifnb.filtered)
+
+```
+
+
+
+## Section 2: Differential Gene Expression when dealing with two treatment conditions
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
+```
+
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
+```
+
+
+### Step 1. Find Conserved Markers to label our celltypes
+
+``` {r}
+## Let's look at conserved markers in cluster 4 across our two conditions (compared to all other clusters)
+markers.cluster.4 <- FindConservedMarkers(ifnb.filtered, ident.1 = 4,
+                     grouping.var = 'stim')
+
+
+head(markers.cluster.4)
+
+```
+
+Let's visualise the top upregulated, conserved between condition,
+marker genes identified in cluster 4 using the `FeaturePlot()` function.
+
+
+::::: discussion
+
+Try running the function in the code block below without
+defining a min.cutoff, or changing the value of the min.cutoff
+parameter.
+
+:::::
+
+
+``` {r}
+# Try looking up some of these markers here: https://www.proteinatlas.org/
+FeaturePlot(ifnb.filtered, reduction = "umap.cca", 
+            features = c('VMO1', 'FCGR3A', 'MS4A7', 'CXCL16'), min.cutoff = 'q10')
+```
+
+
+
+``` {r}
+# I happen to know that the cells in cluster 3 are CD16 monocytes - lets rename this cluster
+# Idents(ifnb.filtered) # Let's look at the identities of our cells at the moment
+```
+
+
+``` {r}
+ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename cells in cluster 3 with a new cell type label
+# Idents(ifnb.filtered) # we can take a look at the cell identities again
+```
+
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
+  ggtitle("After changing the identity of cluster 4")
+```
+
+
+### Step 2: Set the identity of our clusters to the annotations provided
+
+``` {r}
+Idents(ifnb.filtered) <- ifnb.filtered@meta.data$seurat_annotations
+# Idents(ifnb.filtered)
+```
+
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
+```
+
+
+
+:::: callout
+
+If you want to perform cell-type identification on your own data
+when you don't have a ground-truth, using automatic cell type annotation
+methods can be a good starting point. This approach is discussed in more
+detail in the Intro to scRNA-seq workshop material.
+
+::::
+
+
+
+### Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
+
+``` {r}
+# Make another column in metadata showing what cells belong to each treatment group (This will make more sense in a bit)
+ifnb.filtered$celltype.and.stim <- paste0(ifnb.filtered$seurat_annotations, '_', ifnb.filtered$stim)
+# (ifnb.filtered@meta.data)
+
+Idents(ifnb.filtered) <- ifnb.filtered$celltype.and.stim
+
+DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) # each cluster is now made up of two labels (control or stimulated)
+```
+
+
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = "umap.cca", 
+        label = T, split.by = "stim") # Lets separate by condition to see what we've done a bit more clearly
+```
+
+
+
+We'll now leverage these new identities to compare DEGs between our
+treatment groups
+
+``` {r}
+treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM', 
+                                       ident.2 = 'CD16 Mono_CTRL')
+head(treatment.response.CD16) # These are the genes that are upregulated in the stimulated versus control group
+
+```
+
+### Step 4: Lets plot conserved features vs DEGs between conditions
+
+``` {r}
+FeaturePlot(ifnb.filtered, reduction = 'umap.cca', 
+            features = c('VMO1', 'FCGR3A', 'IFIT1', 'ISG15'),
+            split.by = 'stim', min.cutoff = 'q10')
+```
+
+
+### Step 5: Create a Heatmap to visualise DEGs between our two conditions + cell types
+
+``` {r, warning=FALSE,message=FALSE}
+# Find upregulated genes in each group (cell type and condition)
+ifnb.treatVsCtrl.markers <- FindAllMarkers(ifnb.filtered,
+                                          only.pos = TRUE)
+
+```
+
+```{r, eval=FALSE}
+
+saveRDS(ifnb.treatVsCtrl.markers, "ifnb_stimVsCtrl_markers.rds")
+
+```
+
+
+
+If the top code block takes too long to run - you can download the rds
+file of the output using the code below:
+
+Seurat's in-built heatmap function can be quite messy and hard to
+interpret sometimes (we'll learn how to make better and clearer custom
+heatmaps using the pheatmap package from our Seurat expression data
+later on).
+
+``` {r}
+ifnb.treatVsCtrl.markers <- readRDS(url("https://github.com/manveerchauhan/Seurat_DE_Workshop/raw/refs/heads/main/ifnb_stimVsCtrl_markers.rds"))
+
+top5 <- ifnb.treatVsCtrl.markers %>%
+  group_by(cluster) %>%
+  dplyr::filter(avg_log2FC > 1) %>%
+  slice_head(n = 5) %>%
+  ungroup()
+
+DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
+          label = FALSE)
+
+DEG.heatmap
+```
+
+
+
+::::::::::::::::::::::::::::::::::::: keypoints 
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+

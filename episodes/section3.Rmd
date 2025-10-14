@@ -1,0 +1,508 @@
+---
+title: 'Section 3 : Differential Expression using a pseudobulk approach and DESeq2'
+teaching: 10
+exercises: 2
+---
+
+:::::::::::::::::::::::::::::::::::::: questions 
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::: objectives
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+
+
+library(Seurat)
+library(SeuratData)
+library(tidyverse)
+library(DESeq2)
+library(patchwork)
+library(pheatmap)
+library(grid)
+library(metap)
+
+set.seed(4242) # Set Seed for Reproducibility
+
+load('data/ifnb.RData')
+ifnb$percent.mt <- PercentageFeatureSet(object = ifnb, pattern = "^MT-") 
+ifnb.filtered <- subset(ifnb, subset = nCount_RNA > 800 & 
+                          nCount_RNA < 5000 &
+                          nFeature_RNA > 200 &
+                          nFeature_RNA < 1200 &
+                          percent.mt < 5)
+ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim)
+ifnb.filtered <- NormalizeData(ifnb.filtered)
+ifnb.filtered <- FindVariableFeatures(ifnb.filtered)
+ifnb.filtered <- ScaleData(ifnb.filtered)
+ifnb.filtered <- RunPCA(ifnb.filtered)
+ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = 'pca')
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = HarmonyIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "harmony")
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, reduction.name = "umap.harmony")
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = CCAIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "integrated.cca")
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:20, reduction.name = "umap.cca")
+ifnb.filtered <- FindNeighbors(ifnb.filtered, reduction = "integrated.cca", dims = 1:20)
+ifnb.filtered <- FindClusters(ifnb.filtered, resolution = 0.5)
+ifnb.filtered <- JoinLayers(ifnb.filtered)
+ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') 
+Idents(ifnb.filtered) <- ifnb.filtered@meta.data$seurat_annotations
+ifnb.filtered$celltype.and.stim <- paste0(ifnb.filtered$seurat_annotations, '_', ifnb.filtered$stim)
+Idents(ifnb.filtered) <- ifnb.filtered$celltype.and.stim
+
+treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM', ident.2 = 'CD16 Mono_CTRL')
+
+```
+
+## Section 3 : Differential Expression using a pseudobulk approach and DESeq2
+
+### Step 1: We need to import sample information for each cell from the original paper
+
+
+:::: discussion
+
+Have a look at the ifnb.filtered seurat metadata, can you
+spot what we've done here?
+
+::::
+
+``` {r}
+# defining a function here to retrieve that information (code from https://satijalab.org/seurat/articles/de_vignette)
+loadDonorMetadata <- function(seu.obj){
+  # load the inferred sample IDs of each cell
+  ctrl <- read.table(url("https://raw.githubusercontent.com/yelabucsf/demuxlet_paper_code/master/fig3/ye1.ctrl.8.10.sm.best"), head = T, stringsAsFactors = F)
+  stim <- read.table(url("https://raw.githubusercontent.com/yelabucsf/demuxlet_paper_code/master/fig3/ye2.stim.8.10.sm.best"), head = T, stringsAsFactors = F)
+  info <- rbind(ctrl, stim)
+  
+  # rename the cell IDs by substituting the '-' into '.'
+  info$BARCODE <- gsub(pattern = "\\-", replacement = "\\.", info$BARCODE)
+  
+  # only keep the cells with high-confidence sample ID
+  info <- info[grep(pattern = "SNG", x = info$BEST), ]
+  
+  # remove cells with duplicated IDs in both ctrl and stim groups
+  info <- info[!duplicated(info$BARCODE) & !duplicated(info$BARCODE, fromLast = T), ]
+  
+  # now add the sample IDs to ifnb 
+  rownames(info) <- info$BARCODE
+  info <- info[, c("BEST"), drop = F]
+  names(info) <- c("donor_id")
+  seu.obj <- AddMetaData(seu.obj, metadata = info)
+  
+  # remove cells without donor IDs
+  seu.obj$donor_id[is.na(seu.obj$donor_id)] <- "unknown"
+  seu.obj <- subset(seu.obj, subset = donor_id != "unknown")
+  
+  return(seu.obj)
+}
+
+ifnb.filtered <- loadDonorMetadata(ifnb.filtered)
+```
+
+### Step 2: Aggregate our counts based on treatment group, cell-type, and donor id
+
+Collapsing our single-cell matrix in this manner is referred to as
+creating a 'pseudo-bulk' count matrix.. We're making a condensed count
+matrix that looks more like a bulk matrix so that we can use bulk
+differential expression algorithms like DESeq2. We can see this clearly
+when we have a look at the ifnb.pseudbulk.df we make in the following
+code block.
+
+``` {r}
+ifnb.pseudobulk <- AggregateExpression(ifnb.filtered, assays = "RNA",
+                                   group.by = c("stim", "donor_id", "seurat_annotations"),
+                                   return.seurat = TRUE)
+
+## Centering and scaling data matrix
+# If you want the pseudobulk matrix as a dataframe you can do this:
+ifnb.pseudobulk.df <- AggregateExpression(ifnb.filtered, assays = "RNA",
+                                          group.by = c("stim", "donor_id", "seurat_annotations")) %>% 
+  as.data.frame()
+
+
+```
+
+We can view the top rows here:
+
+```{r,eval=FALSE}
+
+head(ifnb.pseudobulk.df)
+
+```
+
+
+
+### Step 3: Perform Differential Expression using DESeq2
+
+Just like before, lets make a new column containing the cell type and
+treatment group before DE with DESeq2. We do this so that we can
+leverage the Idents() function combined with the FindMarkers function.
+
+To use DESeq2 in older versions of Seurat (prior to v5) we would have to
+perform a myriad of convoluted data wrangling steps to convert our
+Seurat pseudobulk matrix into a format compatible with DESeq2 (or
+whatever bulk DE package being used). Fortunately in Seurat v5, these
+different bulk DE algorithms/packages have been wrapped into the
+FindMarker() functions - simplifying pseudobulk DE approaches immensely.
+
+It is worth taking a look at the Seurat DE vignette on your own to see
+the other pseudobulk DE methods you can use. Do keep in mind that to use
+some of the DE tests, you need to install that package and load it as a
+library separately to Seurat, as we've done here with DESeq2 at the
+start.
+
+``` {r}
+ifnb.pseudobulk$celltype.and.stim <- paste(ifnb.pseudobulk$seurat_annotations, ifnb.pseudobulk$stim, sep = "_")
+Idents(ifnb.pseudobulk) <- "celltype.and.stim"
+
+
+# Lets run a DEG test between treated and control CD 16 monocytes using the same FindMarkers function but with DESeq2
+treatment.response.CD16.pseudo <- FindMarkers(object = ifnb.pseudobulk, 
+                                      ident.1 = 'CD16 Mono_STIM', 
+                                      ident.2 = 'CD16 Mono_CTRL',
+                                      test.use = "DESeq2")
+
+
+head(treatment.response.CD16.pseudo)
+
+
+
+# How are we able to use the same findmarkers function here?
+head(Cells(ifnb.pseudobulk)) # our 'cells' are no longer barcodes, but have been renamed according to stim-donor-annotation when we aggregated our data earlier
+
+
+```
+
+### Step 4: Assessing differences between our pseudbulk DEGs and single-cell DEGs
+
+First lets take a look at the DEG dataframes we made for both.
+
+
+:::: discussion
+
+Having a look at them, can you identify any differences?
+Can you think of any underlying reasons behind those differences?
+
+Hint: Look at the p_val and p_val_adj columns.
+::::
+
+``` {r}
+head(treatment.response.CD16)
+
+
+
+head(treatment.response.CD16.pseudo)
+
+
+```
+
+Next let's take a look at the degree of overlap between the actual DEGs
+in both approaches.
+
+To help with this, I'm just going to define a couple helper functions
+below.
+
+``` {r}
+Merge_DEG_dataframes <- function(pseudobulk.de,
+                                 singlecell.de){
+  names(pseudobulk.de) <- paste0(names(pseudobulk.de), ".bulk")
+  pseudobulk.de$gene <- rownames(pseudobulk.de)
+  
+  names(singlecell.de) <- paste0(names(singlecell.de), ".sc")
+  singlecell.de$gene <- rownames(singlecell.de)
+  
+  merge_dat <- merge(singlecell.de, pseudobulk.de, by = "gene")
+  merge_dat <- merge_dat[order(merge_dat$p_val.bulk), ]
+  
+  return(merge_dat)
+}
+Visualise_Overlapping_DEGs <- function(pseudobulk.de,
+                                       singlecell.de){
+  
+  merge_dat <- Merge_DEG_dataframes(pseudobulk.de,
+                                    singlecell.de)
+  
+  # Number of genes that are marginally significant in both; marginally significant only in bulk; and marginally     significant only in single-cell
+  common <- merge_dat$gene[which(merge_dat$p_val_adj.bulk < 0.05 & 
+                                   merge_dat$p_val_adj.sc < 0.05)]
+  only_sc <- merge_dat$gene[which(merge_dat$p_val_adj.bulk > 0.05 & 
+                                    merge_dat$p_val_adj.sc < 0.05)]
+  only_pseudobulk <- merge_dat$gene[which(merge_dat$p_val_adj.bulk < 0.05 & 
+                                      merge_dat$p_val_adj.sc > 0.05)]
+  
+  # Create a dataframe to plot overlaps
+  overlap.info <- data.frame(
+    category = c("Common", 
+                 "Only in single-cell", 
+                 "Only in pseudobulk"),
+    count = c(length(common), length(only_sc), length(only_pseudobulk))
+  )
+  
+  overlap.info$category <- factor(overlap.info$category, 
+                                  levels = c("Common", 
+                                             "Only in single-cell", 
+                                             "Only in pseudobulk"))
+  # Create the bar plot
+  overlap.bar.plt <- ggplot(overlap.info, aes(x = category, y = count, fill = category)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = count), vjust = -0.5, size = 4) +
+    theme_minimal() +
+    labs(title = "Number of Overlapping and Unique DEGs from Single-Cell and Pseudobulk Tests",
+         x = "",
+         y = "Number of Genes") +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  return(overlap.bar.plt)
+}
+```
+
+Let's use the helper functions above to plot and view the
+overlap/agreement between our pseudobulk versus single-cell approaches
+
+ 
+        
+``` {r}
+merged_deg_data <- Merge_DEG_dataframes(pseudobulk.de = treatment.response.CD16.pseudo,
+                                        singlecell.de = treatment.response.CD16)
+merged_deg_data %>% 
+  dplyr::select(gene, 
+                p_val.sc, p_val.bulk,
+                p_val_adj.sc, p_val_adj.bulk) %>%
+  head(10)
+
+
+
+# How many DEGs overlap between our two methods? Is there anything in the merged_deg_data frame that stands out to you?
+overlap.bar.plt <- Visualise_Overlapping_DEGs(pseudobulk.de = treatment.response.CD16.pseudo,
+                                              singlecell.de = treatment.response.CD16)
+
+overlap.bar.plt
+```
+
+:::: discussion
+        
+Can you explain why we're seeing the discrepancies we see
+between the two methods here?  
+
+::::
+
+
+
+### Step 5: Investigate the differences between pseudobulk DE and single-cell DE closer
+
+Let's create lists of genes in each of our categories first
+
+``` {r}
+common <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk < 0.05 & 
+                                       merged_deg_data$p_val.sc < 0.05)]
+only_sc <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk > 0.05 & 
+                                        merged_deg_data$p_val.sc < 0.05)]
+only_pseudobulk <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk < 0.05 & 
+                                          merged_deg_data$p_val.sc > 0.05)]
+```
+
+Now I want to look at the expression of genes that only appear in our sc
+deg test and not in our pseudobulk deg test I've picked two genes from
+the 'only_sc' variable we just defined
+
+``` {r}
+# create a new column to annotate sample-condition-celltype in the single-cell dataset
+ifnb.filtered$donor_id.and.stim <- paste0(ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
+Idents(ifnb.filtered) <- "celltype.and.stim"
+
+# Explore some genes that only appear in the sc deg test---
+VlnPlot(ifnb.filtered, features = c("PABPC1", "SRGN"), 
+        idents = c("CD16 Mono_CTRL", "CD16 Mono_STIM"), 
+        group.by = "stim") 
+```
+
+
+
+``` {r}
+VlnPlot(ifnb.filtered, features = c("PABPC1", "SRGN"), 
+        idents = c("CD16 Mono_CTRL", "CD16 Mono_STIM"), 
+        group.by = "donor_id.and.stim", ncol = 1)
+```
+
+
+:::: discussion
+
+How would you interpret the plots above? What does this
+tell you about some of the pitfalls of single-cell DE approaches?
+
+::::
+
+Now lets take a look at some genes that show agreement across both sc
+and pseudobulk deg tests
+
+``` {r}
+VlnPlot(ifnb.filtered, features = c("IFIT2", "PSMA4"), 
+        idents = c("CD16 Mono_CTRL", "CD16 Mono_STIM"), 
+        group.by = "stim") 
+```
+
+
+
+``` {r}
+VlnPlot(ifnb.filtered, features = c("IFIT2", "PSMA4"), 
+        idents = c("CD16 Mono_CTRL", "CD16 Mono_STIM"), 
+        group.by = "donor_id.and.stim", ncol = 1) 
+```
+
+
+### Step 6: Creating our own custom visualisations for DEG analysis between cell-types in two different experimental groups
+
+So far, we've been using functions wrapped within Seurat to plot and
+visualise our data. But we're not limited to those functions. Let's use
+the pheatmap ('pretty heatmap') package to visualise our DEGs with
+adjusted p values \< 0.05.
+
+First lets look at our significant DEGs as defined by our pseudobulk
+approach
+
+``` {r}
+CD16.sig.markers <- treatment.response.CD16.pseudo %>% 
+  dplyr::filter(p_val_adj < 0.05) %>%
+  dplyr::mutate(gene = rownames(.))
+```
+
+This is how we can pull our average (scaled) pseudobulk expression
+values from our seurat obj:
+
+``` {r}
+ifnb.filtered$celltype.stim.donor_id <- paste0(ifnb.filtered$seurat_annotations, "-",
+                                               ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
+Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+
+all.sig.avg.Expression.mat <- AverageExpression(ifnb.filtered, 
+                         features = CD16.sig.markers$gene, 
+                         layer = 'scale.data')
+
+## As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk analysis.
+## This message is displayed once per session.
+
+# View(all.sig.avg.Expression.mat %>%
+#  as.data.frame())
+```
+
+Now lets make sure we're only using data from the CD16 cell type
+
+``` {r}
+CD16.sig.avg.Expression.mat <- all.sig.avg.Expression.mat$RNA %>%
+  as.data.frame() %>%
+  dplyr::select(starts_with("CD16 Mono"))
+
+# View(CD16.sig.avg.Expression.mat)
+```
+
+Let's finally view our heatmap with averaged pseudobulk scaled
+expression values for our signficant DEGs
+
+``` {r}
+pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
+         cluster_rows = TRUE,
+         show_rownames = FALSE, 
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20)
+```
+
+
+
+The cool thing about pheatmap is that we can customise our heatmap with
+added metadata
+
+``` {r}
+cluster_metadata <- data.frame(
+  row.names = colnames(CD16.sig.avg.Expression.mat)
+) %>% 
+  dplyr::mutate(
+    Cell_Type = "CD16 Mono",
+    Treatment_Group = ifelse(str_detect(row.names(.), "STIM|CTRL"), 
+                      str_extract(row.names(.), "STIM|CTRL")))
+
+sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
+         cluster_rows = TRUE,
+         show_rownames = FALSE,
+         annotation = cluster_metadata[, c("Treatment_Group", "Cell_Type")], 
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20,
+         annotation_names_col = FALSE)
+
+sig.DEG.heatmap
+```
+
+
+
+Lets save our heatmap using the grid library (very useful package!) Code
+from:
+<https://stackoverflow.com/questions/43051525/how-to-draw-pheatmap-plot-to-screen-and-also-save-to-file>
+
+``` {r, eval=FALSE}
+save_pheatmap_pdf <- function(x, filename, width=7, height=7) {
+   stopifnot(!missing(x))
+   stopifnot(!missing(filename))
+   pdf(filename, width=width, height=height)
+   grid::grid.newpage()
+   grid::grid.draw(x$gtable)
+   dev.off()
+}
+
+save_pheatmap_pdf(sig.DEG.heatmap, "sig_DEG_pseudo.pdf")
+
+
+```
+
+
+:::: challenge
+
+Do the same thing with significant DEGs from the sc approach. Do you see any differences?
+
+
+
+:::: solution
+
+ Run the same code as above but with the `treatment.response.CD16` variable instead of `treatment.response.CD16.pseudo` variable.
+
+:::::
+
+:::::
+
+
+You have now completed the workshop! 
+
+Hopefully you've
+found this workshop useful and you're now feeling more confident about
+using different integration and differential expression approaches in
+single-cell data analysis.
+
+:::: discussion
+What kind of analyses do you think we can do next after obtaining a list of differentially expressed genes (DEGs) for each cell type and treatment groups?
+
+::::
+
+
+
+::::::::::::::::::::::::::::::::::::: keypoints 
+
+-
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+

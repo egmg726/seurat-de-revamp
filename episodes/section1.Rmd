@@ -1,0 +1,378 @@
+---
+title: 'Section 1: Setup, Quality Control and Sample Integration'
+teaching: 10
+exercises: 2
+---
+
+
+:::::::::::::::::::::::::::::::::::::: questions 
+
+- hello!
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::: objectives
+
+- hello!
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
+### Step 1. Load the packages and data
+
+Today we'll be working with Seurat (a popular scRNA-seq analysis
+package). SeuratData will be used to load in the experimental data we're
+analysing. Tidyverse is a fundamental and very popularly used set of
+tools to wrangle and visualise data.
+
+We'll need to load the DESeq2 R package for when we explore pseudobulk
+DE approaches
+
+pheatmap and grid are two really useful packages for creating custom
+heatmaps with our scRNA-seq data and exporting figures, respectively.
+
+``` {r, message=FALSE,warning=FALSE}
+library(Seurat)
+library(SeuratData)
+library(tidyverse)
+library(DESeq2)
+library(patchwork)
+library(pheatmap)
+library(grid)
+library(metap)
+
+set.seed(4242) # Set Seed for Reproducibility
+```
+
+We're using the ifnb public dataset provided by Seurat. This dataset
+contains PBMC data from 8 lupus patients before and after interferon
+beta treatment.
+
+I strongly encourage you to explore the other datasets offered by the
+SeuratData package, it can be really good practice in your spare time.
+
+The ifnb Seurat object we're loading in here was originally made in
+Seurat v4, there have since been a lot of changes from Seurat v4 to v5
+so we'll use the UpdateSeuratObject() function to update the Seurat
+object so that it is compatible for today.
+
+
+``` {r}
+head(AvailableData()) # if you want to see the available SeuratData datasets use this function
+```
+
+
+``` {r, eval=FALSE}
+InstallData("ifnb") # install our treatment vs control dataset for today
+
+data("ifnb") # Load the dataset into our current R script
+ifnb <- UpdateSeuratObject(ifnb) # Make sure the seurat object is in the format of Seurat v5
+
+str(ifnb) # we can use this to take a look at the information in our Seurat Object
+```
+
+
+```{r,echo=FALSE}
+
+load('data/ifnb.RData')
+
+```
+
+
+::::::::::::::::::::::::::::::::::::: challenge 
+
+Looking at the output from the `str()` function above, can
+you tell whether this seurat object is processed or unprocessed?
+
+:::::::::::::::::::::::: solution 
+
+When loading in seurat objects, we can have a look at what processing steps have been performed on it by using the str() function. In the output we can tell that the ifnb Seurat object is unprocessed because the scale.data slot is empty, no variable features have been identified, and no dimensionality reduction functions have been performed.  
+
+:::::::::::::::::::::::::::::::::
+
+
+:::::::::::::::::::::::::::::::::::
+
+### Step 2: Run QC, filter out low quality cells
+
+Lets start by processing our data (run the standard seurat workflow
+steps including preprocessing and filtering).
+
+First we need to take a look at QC metrics, then decide on the
+thresholds for filtering.
+
+
+:::::::: discussion
+
+Looking at the violin plots of QC metrics, what do you
+think about the overall quality of the ifnb dataset?
+
+::::::::
+
+
+``` {r}
+# Step 2a: QC and filtering
+ifnb$percent.mt <- PercentageFeatureSet(object = ifnb, pattern = "^MT-") # First let's annotate the mitochondrial percentage for each cell
+
+head((ifnb@meta.data)) # we can take a look mitochondrial percentages for the seurat object by viewing the seurat objects metadata
+
+# Step 2b: Visualise QC metrics and identify filtering thresholds
+qc.metric.plts <- VlnPlot(ifnb, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) + 
+  ggtitle("Before Filtering")
+
+association.plt.raw <- FeatureScatter(ifnb, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") + geom_smooth(method = "lm") +
+  ggtitle("Before Filtering")
+
+qc.metric.plts
+association.plt.raw
+```
+
+
+After visualising QC metrics, we'll move on to the actual filtering
+
+``` {r}
+# Step 2c: filter out low-quality cells + visualise the metrics for our filtered seurat object
+ifnb.filtered <- subset(ifnb, subset = nCount_RNA > 800 & 
+                          nCount_RNA < 5000 &
+                          nFeature_RNA > 200 &
+                          nFeature_RNA < 1200 &
+                          percent.mt < 5)
+
+qc.metric.plts.filtered <- VlnPlot(ifnb.filtered, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) +
+  ggtitle("After Filtering")
+association.plt.filtered <- FeatureScatter(ifnb.filtered, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") + geom_smooth(method = "lm") +
+  ggtitle("After Filtering")
+
+qc.metric.plts.filtered
+association.plt.filtered
+```
+
+Let's check how many cells we've filtered out (looks like \~400 cells
+were removed):
+
+``` {r}
+## Defining a couple helper functions to standardise x and y axis for two plots
+get_plot_range <- function(plot) {
+  data <- layer_data(plot)
+  list(
+    x = range(data$x, na.rm = TRUE),
+    y = range(data$y, na.rm = TRUE)
+  )
+}
+standardise_plt_scale <- function(plt1, plt2){
+
+  # Get ranges for both plots
+  range_raw <- get_plot_range(plt1)
+  range_filtered <- get_plot_range(plt2)
+  
+  # Calculate overall range
+  x_range <- range(c(range_raw$x, range_filtered$x))
+  y_range <- range(c(range_raw$y, range_filtered$y))
+  
+  suppressMessages({
+  # Update both plots with the same x and y scales
+  association.plt.raw <- association.plt.raw +
+    scale_x_continuous(limits = x_range) +
+    scale_y_continuous(limits = y_range)
+  
+  association.plt.filtered <- association.plt.filtered +
+    scale_x_continuous(limits = x_range) +
+    scale_y_continuous(limits = y_range)
+  })
+  
+  # Wrap the plots
+  wrapped_plots <- wrap_plots(list(association.plt.raw, association.plt.filtered), 
+                              ncol = 2)
+
+  return(wrapped_plots)
+}
+
+wrap_plots(list(qc.metric.plts, qc.metric.plts.filtered), 
+           ncol = 1)
+```
+
+
+``` {r}
+association.plts <- standardise_plt_scale(association.plt.raw,
+                                          association.plt.filtered)
+association.plts
+```
+
+
+Let's check how many cells we've filtered out (looks like \~400 cells
+were removed):
+
+``` {r}
+ifnb
+```
+
+
+``` {r}
+ifnb.filtered
+```
+
+
+
+Next we need to split our count matrices based on conditions. This step
+stores stimulated versus unstimulated expression information separately,
+creating a list of RNA assays grouped by the "stim" condition. Note:
+this is important for downstream integration steps in Seurat v5.
+
+``` {r}
+ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim) # Lets split our count matrices based on conditions (stored within different layers) -> needed for integration steps in Seurat v5
+```
+
+### Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
+
+After filtering out low quality cells, we want to visualise our data to
+see how cells group by condition and if we need to perform batch-effect
+correction (integration)
+
+``` {r}
+ifnb.filtered <- NormalizeData(ifnb.filtered)
+
+ifnb.filtered <- FindVariableFeatures(ifnb.filtered)
+
+ifnb.filtered <- ScaleData(ifnb.filtered)
+
+## Centering and scaling data matrix
+
+ifnb.filtered <- RunPCA(ifnb.filtered)
+
+
+
+ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 15 PCs is adequate to capture the majority of the variation in the data, but we'll air on the higher side and consider all 20 dimensions.
+```
+
+
+
+``` {r}
+ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = 'pca')
+
+
+DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
+```
+
+
+
+``` {r}
+DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
+```
+
+
+
+These are PBMCs before and after treatment, there should be cells that
+are similar between both conditions, it looks like we'll have to run
+some batch effect correction to overlay similar cell-types from both
+conditions to perform downstream analysis.
+
+
+:::: discussion
+
+Do you think we need to integrate our data? 
+Hint: Look at the UMAP and PC1/PC2 plots we made above 
+
+What do you think would
+happen if we were to perform unsupervised clustering right now, without
+integrating our data (or overlaying similar cells on top of each other
+from both conditions)?
+
+
+::::
+
+
+### Step 4: Integrating our data using the harmony method
+
+Seurat v5 has made it really easy to test different integration methods
+quickly, let's use a really popular approach (harmony) first.
+
+``` {r}
+# code adapted from: https://satijalab.org/seurat/articles/seurat5_integration
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = HarmonyIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "harmony")
+
+
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, reduction.name = "umap.harmony")
+
+after.harmony <- DimPlot(ifnb.filtered, reduction = "umap.harmony", group.by = "stim") + 
+  ggtitle("After Harmony Integration")
+before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "stim") +
+  ggtitle("Before Integration")
+
+before.integration | after.harmony
+```
+
+
+:::: discussion
+
+Looking at the UMAPs above, do you think integration was
+successful? Have a slide on what if its just different cell types. !!!
+question Try looking at the PC1 and PC2 plots for harmony and seurat as
+well
+
+::::
+
+
+
+### Step 5: Integrating our data using an alternative Seurat CCA
+method
+
+``` {r}
+ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
+                                 method = CCAIntegration,
+                                 orig.reduction = "pca", 
+                                 new.reduction = "integrated.cca")
+
+ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:20, reduction.name = "umap.cca")
+
+after.seuratCCA <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim") +
+  ggtitle("After Seurat CCA Integration")
+
+before.integration | after.seuratCCA
+```
+
+
+
+``` {r}
+after.harmony | after.seuratCCA
+
+## Show example slide of integration 'failing' but due to different cell types in each sample ***
+```
+
+
+
+:::::: discussion
+
+What do you think of the integration results now?
+
+:::::::
+
+        
+**Hint:** Also look at the PC1 and PC2 plots for each integration method.
+
+
+### Step 6: Perform standard clustering steps after integration
+
+This step collapses individual control and treatment datasets together
+and needs to be done before differential expression analysis
+
+``` {r}
+ifnb.filtered <- FindNeighbors(ifnb.filtered, reduction = "integrated.cca", dims = 1:20)
+
+
+
+ifnb.filtered <- FindClusters(ifnb.filtered, resolution = 0.5)
+
+
+
+ifnb.filtered <- JoinLayers(ifnb.filtered)
+```
+
+
+::::::::::::::::::::::::::::::::::::: keypoints 
+
+- 
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
