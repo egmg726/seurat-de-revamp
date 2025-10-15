@@ -30,7 +30,7 @@ DE approaches
 pheatmap and grid are two really useful packages for creating custom
 heatmaps with our scRNA-seq data and exporting figures, respectively.
 
-``` {r, eval=FALSE,message=FALSE,warning=FALSE}
+``` r
 library(Seurat)
 library(SeuratData)
 library(tidyverse)
