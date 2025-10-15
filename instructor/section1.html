@@ -407,7 +407,7 @@ you tell whether this seurat object is processed or unprocessed?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>When loading in seurat objects, we can have a look at what processing
 steps have been performed on it by using the str() function. In the
@@ -831,22 +831,22 @@ This message will be shown once per session</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:02:06 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre class="output" tabindex="0"><code>02:10:12 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:02:06 Read 13548 rows and found 20 numeric columns</code></pre>
+<pre class="output" tabindex="0"><code>02:10:12 Read 13548 rows and found 20 numeric columns</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:02:06 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre class="output" tabindex="0"><code>02:10:12 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:02:06 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre class="output" tabindex="0"><code>02:10:12 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -862,14 +862,14 @@ This message will be shown once per session</code></pre>
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="output" tabindex="0"><code>**************************************************|
-01:02:07 Writing NN index file to temp file /tmp/Rtmputu552/fileac4e1f62d716
-01:02:07 Searching Annoy index using 1 thread, search_k = 3000
-01:02:12 Annoy recall = 100%
-01:02:12 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:02:14 Initializing from normalized Laplacian + noise (using RSpectra)
-01:02:15 Commencing optimization for 200 epochs, with 582700 positive edges
-01:02:15 Using rng type: pcg
-01:02:21 Optimization finished</code></pre>
+02:10:13 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e465afbd
+02:10:13 Searching Annoy index using 1 thread, search_k = 3000
+02:10:17 Annoy recall = 100%
+02:10:18 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:10:20 Initializing from normalized Laplacian + noise (using RSpectra)
+02:10:21 Commencing optimization for 200 epochs, with 582700 positive edges
+02:10:21 Using rng type: pcg
+02:10:26 Optimization finished</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb54">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -922,56 +922,59 @@ first.</p>
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="output" tabindex="0"><code>The `features` argument is ignored by `HarmonyIntegration`.
+Transposing data matrix
+
+Using automatic lambda estimation
+
+Initializing state using k-means centroids initialization
+
+Harmony 1/10
+
+Harmony 2/10
+
+Harmony 3/10
+
+Harmony converged after 3 iterations
+
 This message is displayed once per session.</code></pre>
 </div>
-<div class="codewrapper">
-<h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="error" tabindex="0"><code>Error in `method()` at Seurat/R/integration5.R:645:3:
-! The package "harmony" is required for running integration with Harmony</code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb59">
+<div class="codewrapper sourceCode" id="cb58">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">RunUMAP</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, reduction.name <span class="op">=</span> <span class="st">"umap.harmony"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="codewrapper">
-<h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error in `object[[reduction]]` at Seurat/R/dimensional_reduction.R:1869:5:
-! 'harmony' not found in this Seurat object
- </code></pre>
+<pre class="output" tabindex="0"><code>02:10:39 UMAP embedding parameters a = 0.9922 b = 1.112
+02:10:39 Read 13548 rows and found 20 numeric columns
+02:10:39 Using Annoy for neighbor search, n_neighbors = 30
+02:10:39 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+02:10:40 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e437b24df
+02:10:40 Searching Annoy index using 1 thread, search_k = 3000
+02:10:44 Annoy recall = 100%
+02:10:45 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:10:47 Initializing from normalized Laplacian + noise (using RSpectra)
+02:10:47 Commencing optimization for 200 epochs, with 586936 positive edges
+02:10:47 Using rng type: pcg
+02:10:53 Optimization finished</code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb61">
+<div class="codewrapper sourceCode" id="cb60">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">after.harmony</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"umap.harmony"</span>, group.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"After Harmony Integration"</span><span class="op">)</span></span></code></pre>
-</div>
-<div class="codewrapper">
-<h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="error" tabindex="0"><code>Error in `object[[reduction]]` at Seurat/R/visualization.R:900:3:
-! 'umap.harmony' not found in this Seurat object
- </code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb63">
-<h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">before.integration</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"After Harmony Integration"</span><span class="op">)</span></span>
+<span><span class="va">before.integration</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Before Integration"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">before.integration</span> <span class="op">|</span> <span class="va">after.harmony</span></span></code></pre>
 </div>
-<div class="codewrapper">
-<h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="error" tabindex="0"><code>Error: object 'after.harmony' not found</code></pre>
-</div>
-<div id="discussion3" class="callout discussion">
+<figure><img src="../fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div id="discussion3" class="callout discussion">
 <div class="callout-square">
 <i class="callout-icon" data-feather="message-circle"></i>
 </div>
@@ -988,7 +991,7 @@ looking at the PC1 and PC2 plots for harmony and seurat as well</p>
 <div class="section level3">
 <h3 id="step-5-integrating-our-data-using-an-alternative-seurat-cca">Step 5: Integrating our data using an alternative Seurat CCA<a class="anchor" aria-label="anchor" href="#step-5-integrating-our-data-using-an-alternative-seurat-cca"></a></h3>
 <p>method</p>
-<div class="codewrapper sourceCode" id="cb65">
+<div class="codewrapper sourceCode" id="cb61">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1074,7 +1077,7 @@ generated.</code></pre>
 </h3>
 <pre class="output" tabindex="0"><code>Integrating data</code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb79">
+<div class="codewrapper sourceCode" id="cb75">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1083,22 +1086,22 @@ generated.</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:04:55 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre class="output" tabindex="0"><code>02:13:28 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:04:55 Read 13548 rows and found 20 numeric columns</code></pre>
+<pre class="output" tabindex="0"><code>02:13:28 Read 13548 rows and found 20 numeric columns</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:04:55 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre class="output" tabindex="0"><code>02:13:28 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>01:04:55 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre class="output" tabindex="0"><code>02:13:28 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1114,16 +1117,16 @@ generated.</code></pre>
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="output" tabindex="0"><code>**************************************************|
-01:04:56 Writing NN index file to temp file /tmp/Rtmputu552/fileac4ed9ca513
-01:04:56 Searching Annoy index using 1 thread, search_k = 3000
-01:05:01 Annoy recall = 100%
-01:05:02 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:05:04 Initializing from normalized Laplacian + noise (using RSpectra)
-01:05:04 Commencing optimization for 200 epochs, with 595526 positive edges
-01:05:04 Using rng type: pcg
-01:05:10 Optimization finished</code></pre>
+02:13:30 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e71b6a400
+02:13:30 Searching Annoy index using 1 thread, search_k = 3000
+02:13:34 Annoy recall = 100%
+02:13:35 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:13:37 Initializing from normalized Laplacian + noise (using RSpectra)
+02:13:37 Commencing optimization for 200 epochs, with 595526 positive edges
+02:13:37 Using rng type: pcg
+02:13:43 Optimization finished</code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb87">
+<div class="codewrapper sourceCode" id="cb83">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1132,18 +1135,13 @@ generated.</code></pre>
 <span></span>
 <span><span class="va">before.integration</span> <span class="op">|</span> <span class="va">after.seuratCCA</span></span></code></pre>
 </div>
-<figure><img src="../fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb88">
+<figure><img src="../fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb84">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">after.harmony</span> <span class="op">|</span> <span class="va">after.seuratCCA</span></span></code></pre>
 </div>
-<div class="codewrapper">
-<h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="error" tabindex="0"><code>Error: object 'after.harmony' not found</code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb90">
+<figure><img src="../fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb85">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1168,7 +1166,7 @@ integration method.</p>
 <p>This step collapses individual control and treatment datasets
 together and needs to be done before differential expression
 analysis</p>
-<div class="codewrapper sourceCode" id="cb91">
+<div class="codewrapper sourceCode" id="cb86">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1184,7 +1182,7 @@ analysis</p>
 </h3>
 <pre class="output" tabindex="0"><code>Computing SNN</code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb94">
+<div class="codewrapper sourceCode" id="cb89">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1203,7 +1201,7 @@ Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
 Elapsed time: 2 seconds</code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb96">
+<div class="codewrapper sourceCode" id="cb91">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
