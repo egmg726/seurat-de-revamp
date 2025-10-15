@@ -17,17 +17,6 @@ exercises: 2
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 
-``` error
-Error in `method()` at Seurat/R/integration5.R:645:3:
-! The package "harmony" is required for running integration with Harmony
-```
-
-``` error
-Error in `object[[reduction]]` at Seurat/R/dimensional_reduction.R:1869:5:
-! 'harmony' not found in this Seurat object
- 
-```
-
 ``` output
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 

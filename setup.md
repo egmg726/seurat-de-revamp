@@ -52,6 +52,7 @@ if (!require("BiocManager", quietly = TRUE)) {
 }
 BiocManager::install("DESeq2")
 BiocManager::install("multtest") # dependency commonly missing
+install.packages("harmony") # dependency needed for harmony analysis
 
 install.packages("tidyverse")
 install.packages("pheatmap")

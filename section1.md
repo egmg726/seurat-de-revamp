@@ -472,19 +472,19 @@ This message will be shown once per session
 ```
 
 ``` output
-01:02:06 UMAP embedding parameters a = 0.9922 b = 1.112
+02:10:12 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:02:06 Read 13548 rows and found 20 numeric columns
+02:10:12 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:02:06 Using Annoy for neighbor search, n_neighbors = 30
+02:10:12 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:02:06 Building Annoy index with metric = cosine, n_trees = 50
+02:10:12 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -497,14 +497,14 @@ This message will be shown once per session
 
 ``` output
 **************************************************|
-01:02:07 Writing NN index file to temp file /tmp/Rtmputu552/fileac4e1f62d716
-01:02:07 Searching Annoy index using 1 thread, search_k = 3000
-01:02:12 Annoy recall = 100%
-01:02:12 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:02:14 Initializing from normalized Laplacian + noise (using RSpectra)
-01:02:15 Commencing optimization for 200 epochs, with 582700 positive edges
-01:02:15 Using rng type: pcg
-01:02:21 Optimization finished
+02:10:13 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e465afbd
+02:10:13 Searching Annoy index using 1 thread, search_k = 3000
+02:10:17 Annoy recall = 100%
+02:10:18 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:10:20 Initializing from normalized Laplacian + noise (using RSpectra)
+02:10:21 Commencing optimization for 200 epochs, with 582700 positive edges
+02:10:21 Using rng type: pcg
+02:10:26 Optimization finished
 ```
 
 ``` r
@@ -560,45 +560,55 @@ ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
 
 ``` output
 The `features` argument is ignored by `HarmonyIntegration`.
-This message is displayed once per session.
-```
+Transposing data matrix
 
-``` error
-Error in `method()` at Seurat/R/integration5.R:645:3:
-! The package "harmony" is required for running integration with Harmony
+Using automatic lambda estimation
+
+Initializing state using k-means centroids initialization
+
+Harmony 1/10
+
+Harmony 2/10
+
+Harmony 3/10
+
+Harmony converged after 3 iterations
+
+This message is displayed once per session.
 ```
 
 ``` r
 ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, reduction.name = "umap.harmony")
 ```
 
-``` error
-Error in `object[[reduction]]` at Seurat/R/dimensional_reduction.R:1869:5:
-! 'harmony' not found in this Seurat object
- 
+``` output
+02:10:39 UMAP embedding parameters a = 0.9922 b = 1.112
+02:10:39 Read 13548 rows and found 20 numeric columns
+02:10:39 Using Annoy for neighbor search, n_neighbors = 30
+02:10:39 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+02:10:40 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e437b24df
+02:10:40 Searching Annoy index using 1 thread, search_k = 3000
+02:10:44 Annoy recall = 100%
+02:10:45 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:10:47 Initializing from normalized Laplacian + noise (using RSpectra)
+02:10:47 Commencing optimization for 200 epochs, with 586936 positive edges
+02:10:47 Using rng type: pcg
+02:10:53 Optimization finished
 ```
 
 ``` r
 after.harmony <- DimPlot(ifnb.filtered, reduction = "umap.harmony", group.by = "stim") + 
   ggtitle("After Harmony Integration")
-```
-
-``` error
-Error in `object[[reduction]]` at Seurat/R/visualization.R:900:3:
-! 'umap.harmony' not found in this Seurat object
- 
-```
-
-``` r
 before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "stim") +
   ggtitle("Before Integration")
 
 before.integration | after.harmony
 ```
 
-``` error
-Error: object 'after.harmony' not found
-```
+<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 
 :::: discussion
@@ -692,19 +702,19 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 ```
 
 ``` output
-01:04:55 UMAP embedding parameters a = 0.9922 b = 1.112
+02:13:28 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:04:55 Read 13548 rows and found 20 numeric columns
+02:13:28 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:04:55 Using Annoy for neighbor search, n_neighbors = 30
+02:13:28 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:04:55 Building Annoy index with metric = cosine, n_trees = 50
+02:13:28 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -717,14 +727,14 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 
 ``` output
 **************************************************|
-01:04:56 Writing NN index file to temp file /tmp/Rtmputu552/fileac4ed9ca513
-01:04:56 Searching Annoy index using 1 thread, search_k = 3000
-01:05:01 Annoy recall = 100%
-01:05:02 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:05:04 Initializing from normalized Laplacian + noise (using RSpectra)
-01:05:04 Commencing optimization for 200 epochs, with 595526 positive edges
-01:05:04 Using rng type: pcg
-01:05:10 Optimization finished
+02:13:30 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e71b6a400
+02:13:30 Searching Annoy index using 1 thread, search_k = 3000
+02:13:34 Annoy recall = 100%
+02:13:35 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+02:13:37 Initializing from normalized Laplacian + noise (using RSpectra)
+02:13:37 Commencing optimization for 200 epochs, with 595526 positive edges
+02:13:37 Using rng type: pcg
+02:13:43 Optimization finished
 ```
 
 ``` r
@@ -743,9 +753,7 @@ before.integration | after.seuratCCA
 after.harmony | after.seuratCCA
 ```
 
-``` error
-Error: object 'after.harmony' not found
-```
+<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ## Show example slide of integration 'failing' but due to different cell types in each sample ***
