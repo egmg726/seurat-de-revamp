@@ -20,7 +20,7 @@ exercises: 2
 
 
 library(Seurat)
-library(SeuratData)
+#Slibrary(SeuratData)
 library(tidyverse)
 library(DESeq2)
 library(patchwork)

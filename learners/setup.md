@@ -51,6 +51,7 @@ if (!require("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("DESeq2")
+BiocManager::install("multtest") # dependency commonly missing
 
 install.packages("tidyverse")
 install.packages("pheatmap")

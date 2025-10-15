@@ -30,9 +30,23 @@ DE approaches
 pheatmap and grid are two really useful packages for creating custom
 heatmaps with our scRNA-seq data and exporting figures, respectively.
 
-``` {r, message=FALSE,warning=FALSE}
+``` {r, eval=FALSE,message=FALSE,warning=FALSE}
 library(Seurat)
 library(SeuratData)
+library(tidyverse)
+library(DESeq2)
+library(patchwork)
+library(pheatmap)
+library(grid)
+library(metap)
+
+set.seed(4242) # Set Seed for Reproducibility
+```
+
+
+``` {r, echo=FALSE,message=FALSE,warning=FALSE}
+library(Seurat)
+#library(SeuratData)
 library(tidyverse)
 library(DESeq2)
 library(patchwork)
@@ -52,11 +66,11 @@ SeuratData package, it can be really good practice in your spare time.
 
 The ifnb Seurat object we're loading in here was originally made in
 Seurat v4, there have since been a lot of changes from Seurat v4 to v5
-so we'll use the UpdateSeuratObject() function to update the Seurat
+so we'll use the `UpdateSeuratObject()` function to update the Seurat
 object so that it is compatible for today.
 
 
-``` {r}
+``` {r, eval=FALSE}
 head(AvailableData()) # if you want to see the available SeuratData datasets use this function
 ```
 
