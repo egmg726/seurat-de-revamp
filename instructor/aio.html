@@ -346,7 +346,7 @@
         
 <section id="aio-introduction"><p>Content from <a href="introduction.html">Introduction</a></p>
 <hr>
-<p>Last updated on 2025-10-15 |
+<p>Last updated on 2025-10-21 |
 
         <a href="https://example.com/template-source/lesson-example/edit/main/episodes/introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 12 minutes</p>
@@ -478,7 +478,7 @@ any links that you are not going to use.
 </div>
 </div></section><section id="aio-section1"><p>Content from <a href="section1.html">Section 1: Setup, Quality Control and Sample Integration</a></p>
 <hr>
-<p>Last updated on 2025-10-15 |
+<p>Last updated on 2025-10-21 |
 
         <a href="https://example.com/template-source/lesson-example/edit/main/episodes/section1.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 12 minutes</p>
@@ -582,7 +582,7 @@ you tell whether this seurat object is processed or unprocessed?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>When loading in seurat objects, we can have a look at what processing
 steps have been performed on it by using the str() function. In the
@@ -1008,22 +1008,22 @@ This message will be shown once per session</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:10:12 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre class="output" tabindex="0"><code>01:06:00 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:10:12 Read 13548 rows and found 20 numeric columns</code></pre>
+<pre class="output" tabindex="0"><code>01:06:00 Read 13548 rows and found 20 numeric columns</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:10:12 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre class="output" tabindex="0"><code>01:06:00 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:10:12 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre class="output" tabindex="0"><code>01:06:00 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1039,14 +1039,14 @@ This message will be shown once per session</code></pre>
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="output" tabindex="0"><code>**************************************************|
-02:10:13 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e465afbd
-02:10:13 Searching Annoy index using 1 thread, search_k = 3000
-02:10:17 Annoy recall = 100%
-02:10:18 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-02:10:20 Initializing from normalized Laplacian + noise (using RSpectra)
-02:10:21 Commencing optimization for 200 epochs, with 582700 positive edges
-02:10:21 Using rng type: pcg
-02:10:26 Optimization finished</code></pre>
+01:06:02 Writing NN index file to temp file /tmp/RtmpEwUxro/file1233190fd02b
+01:06:02 Searching Annoy index using 1 thread, search_k = 3000
+01:06:06 Annoy recall = 100%
+01:06:07 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:06:09 Initializing from normalized Laplacian + noise (using RSpectra)
+01:06:09 Commencing optimization for 200 epochs, with 582700 positive edges
+01:06:09 Using rng type: pcg
+01:06:15 Optimization finished</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb54">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1125,21 +1125,21 @@ This message is displayed once per session.</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:10:39 UMAP embedding parameters a = 0.9922 b = 1.112
-02:10:39 Read 13548 rows and found 20 numeric columns
-02:10:39 Using Annoy for neighbor search, n_neighbors = 30
-02:10:39 Building Annoy index with metric = cosine, n_trees = 50
+<pre class="output" tabindex="0"><code>01:06:27 UMAP embedding parameters a = 0.9922 b = 1.112
+01:06:27 Read 13548 rows and found 20 numeric columns
+01:06:27 Using Annoy for neighbor search, n_neighbors = 30
+01:06:27 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-02:10:40 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e437b24df
-02:10:40 Searching Annoy index using 1 thread, search_k = 3000
-02:10:44 Annoy recall = 100%
-02:10:45 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-02:10:47 Initializing from normalized Laplacian + noise (using RSpectra)
-02:10:47 Commencing optimization for 200 epochs, with 586936 positive edges
-02:10:47 Using rng type: pcg
-02:10:53 Optimization finished</code></pre>
+01:06:28 Writing NN index file to temp file /tmp/RtmpEwUxro/file12335221c638
+01:06:28 Searching Annoy index using 1 thread, search_k = 3000
+01:06:33 Annoy recall = 100%
+01:06:34 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:06:36 Initializing from normalized Laplacian + noise (using RSpectra)
+01:06:36 Commencing optimization for 200 epochs, with 586936 positive edges
+01:06:36 Using rng type: pcg
+01:06:42 Optimization finished</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb60">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1265,22 +1265,22 @@ generated.</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:13:28 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre class="output" tabindex="0"><code>01:09:17 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:13:28 Read 13548 rows and found 20 numeric columns</code></pre>
+<pre class="output" tabindex="0"><code>01:09:17 Read 13548 rows and found 20 numeric columns</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:13:28 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre class="output" tabindex="0"><code>01:09:17 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>02:13:28 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre class="output" tabindex="0"><code>01:09:17 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1296,14 +1296,14 @@ generated.</code></pre>
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="output" tabindex="0"><code>**************************************************|
-02:13:30 Writing NN index file to temp file /tmp/RtmpfQB4wZ/file118e71b6a400
-02:13:30 Searching Annoy index using 1 thread, search_k = 3000
-02:13:34 Annoy recall = 100%
-02:13:35 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-02:13:37 Initializing from normalized Laplacian + noise (using RSpectra)
-02:13:37 Commencing optimization for 200 epochs, with 595526 positive edges
-02:13:37 Using rng type: pcg
-02:13:43 Optimization finished</code></pre>
+01:09:18 Writing NN index file to temp file /tmp/RtmpEwUxro/file123310b7b442
+01:09:18 Searching Annoy index using 1 thread, search_k = 3000
+01:09:22 Annoy recall = 100%
+01:09:23 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:09:25 Initializing from normalized Laplacian + noise (using RSpectra)
+01:09:25 Commencing optimization for 200 epochs, with 595526 positive edges
+01:09:25 Using rng type: pcg
+01:09:31 Optimization finished</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb83">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1405,7 +1405,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-section2"><p>Content from <a href="section2.html">Section 2: Differential Gene Expression when dealing with two treatment conditions</a></p>
 <hr>
-<p>Last updated on 2025-10-15 |
+<p>Last updated on 2025-10-21 |
 
         <a href="https://example.com/template-source/lesson-example/edit/main/episodes/section2.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 12 minutes</p>
@@ -1771,7 +1771,7 @@ any links that you are not going to use.
 </div>
 </section></section><section id="aio-section3"><p>Content from <a href="section3.html">Section 3 : Differential Expression using a pseudobulk approach and DESeq2</a></p>
 <hr>
-<p>Last updated on 2025-10-15 |
+<p>Last updated on 2025-10-21 |
 
         <a href="https://example.com/template-source/lesson-example/edit/main/episodes/section3.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 12 minutes</p>
@@ -2484,8 +2484,8 @@ any links that you are not going to use.
   "url": "https://template-source.github.io/lesson-example/instructor/aio.html",
   "identifier": "https://template-source.github.io/lesson-example/instructor/aio.html",
   "dateCreated": "2025-09-30",
-  "dateModified": "2025-10-15",
-  "datePublished": "2025-10-15"
+  "dateModified": "2025-10-21",
+  "datePublished": "2025-10-21"
 }
 
   </script><script>
