@@ -18,7 +18,6 @@ exercises: 2
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
 
-
 library(Seurat)
 #library(SeuratData)
 library(tidyverse)
@@ -148,6 +147,41 @@ detail in the Intro to scRNA-seq workshop material.
 
 ::::
 
+::::::::::::::::::::::::::::::::::::: challenge 
+
+Automatic cell type labeling
+
+:::::::::::::::::::::::: solution 
+
+```{r}
+#Convert to single-cell experiment object 
+sce.ifnb <- as.SingleCellExperiment(ifnb)
+
+# In this example, we’ll use the BlueprintEncodeData as the reference data as 
+# it contains blood & immune lineages
+ref.set <- celldex::BlueprintEncodeData()
+
+#The main labels 
+unique(ref.set$label.main)
+
+#Using SingleR to label our cells with the above reference dataset 
+sce.ifnb <- logNormCounts(sce.ifnb )
+pred.cnts <- SingleR::SingleR(test = sce.ifnb  , ref = ref.set, labels = ref.set$label.main)
+
+lbls.keep <- table(pred.cnts$labels)>10
+# Add SingleR labels to Seurat metadata
+ifnb.filtered$SingleR.labels <- sce.ifnb$SingleR.labels
+ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$labels, 'Other')
+
+# Run UMAP (based on PCA)
+ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
+DimPlot(ifnb.filtered, reduction='umap', group.by='SingleR.labels')
+
+
+```
+
+:::::::::::::::::::::::::::::::::
+
 
 
 ### Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
@@ -233,8 +267,6 @@ DEG.heatmap
 
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
-
 - 
-
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
