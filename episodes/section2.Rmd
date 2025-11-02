@@ -6,13 +6,19 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- 
+- How do conserved markers help us label clusters reliably across conditions?
+- What exactly do avg_log2FC, pct.1, pct.2, and p_val_adj mean in FindMarkers?
+- Why must DE be run within a cell type (e.g., CD16 Mono_STIM vs CD16 Mono_CTRL) rather than “all cells”?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- 
+- Use FindConservedMarkers() to pick markers and label clusters.
+- Set identities to annotations and create compound identities (celltype.and.stim) for clean contrasts.
+- Run FindMarkers() to get DEGs between conditions within a cell type and interpret key columns.
+- Visualize DEGs (FeaturePlot with split.by, DoHeatmap / pheatmap) and export results for downstream use.
+- Recognize pitfalls (composition effects, inappropriate contrasts, overly lenient thresholds).
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -27,7 +33,7 @@ library(pheatmap)
 library(grid)
 library(metap)
 library(harmony)
-
+library(scuttle)
 set.seed(4242) # Set Seed for Reproducibility
 
 load('data/ifnb.RData')
@@ -137,7 +143,6 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
 
-
 :::: callout
 
 If you want to perform cell-type identification on your own data
@@ -146,42 +151,6 @@ methods can be a good starting point. This approach is discussed in more
 detail in the Intro to scRNA-seq workshop material.
 
 ::::
-
-::::::::::::::::::::::::::::::::::::: challenge 
-
-Automatic cell type labeling
-
-:::::::::::::::::::::::: solution 
-
-```{r}
-#Convert to single-cell experiment object 
-sce.ifnb <- as.SingleCellExperiment(ifnb)
-
-# In this example, we’ll use the BlueprintEncodeData as the reference data as 
-# it contains blood & immune lineages
-ref.set <- celldex::BlueprintEncodeData()
-
-#The main labels 
-unique(ref.set$label.main)
-
-#Using SingleR to label our cells with the above reference dataset 
-sce.ifnb <- logNormCounts(sce.ifnb )
-pred.cnts <- SingleR::SingleR(test = sce.ifnb  , ref = ref.set, labels = ref.set$label.main)
-
-lbls.keep <- table(pred.cnts$labels)>10
-# Add SingleR labels to Seurat metadata
-ifnb.filtered$SingleR.labels <- sce.ifnb$SingleR.labels
-ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$labels, 'Other')
-
-# Run UMAP (based on PCA)
-ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
-DimPlot(ifnb.filtered, reduction='umap', group.by='SingleR.labels')
-
-
-```
-
-:::::::::::::::::::::::::::::::::
-
 
 
 ### Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
@@ -267,6 +236,8 @@ DEG.heatmap
 
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
-- 
-::::::::::::::::::::::::::::::::::::::::::::::::
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
 
+::::::::::::::::::::::::::::::::::::::::::::::::

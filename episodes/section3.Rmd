@@ -6,13 +6,22 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- 
+- Why aggregate to pseudobulk instead of testing each cell?
+- How does donor act as the biological replicate in DESeq2?
+- When do pseudobulk and single-cell DE agree or disagree, and why (e.g., zero inflation, composition, variance models)?
+- What minimum sampling per group (cells per donor, donors per group) is sensible before aggregating?
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- 
+- Attach donor IDs to cells and create pseudobulk matrices with AggregateExpression().
+- Run DESeq2 from Seurat via FindMarkers(test.use="DESeq2") on pseudobulk objects.
+- Inspect and interpret key outputs (adjusted p-values, log2FC) and compare to single-cell DE.
+- Visualize consensus/unique DEGs and make a publication-ready heatmap with pheatmap.
+- Recognize pitfalls (uneven donor coverage, tiny groups, composition shifts) and report limitations.
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -20,7 +29,7 @@ exercises: 2
 
 
 library(Seurat)
-#Slibrary(SeuratData)
+#library(SeuratData)
 library(tidyverse)
 library(DESeq2)
 library(patchwork)
@@ -503,7 +512,8 @@ What kind of analyses do you think we can do next after obtaining a list of diff
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
--
+- Collapse single-cell counts to pseudobulk per donor × condition × cell type.
+- Compare single-cell DE vs pseudobulk DE.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 

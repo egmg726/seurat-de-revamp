@@ -4,20 +4,6 @@ teaching: 10
 exercises: 2
 ---
 
-:::::::::::::::::::::::::::::::::::::: questions 
-
-- 
-
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-::::::::::::::::::::::::::::::::::::: objectives
-
-- 
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-
-
-
 # scRNA-seq Integration and Differential Expression
 
 [**Slides available here.**](files/seurat-de-slides.pdf)
@@ -92,12 +78,3 @@ material from:
 * https://bookdown.org/ytliu13207/SingleCellMultiOmicsDataAnalysis/
 
 ::::
-
-
-
-
-::::::::::::::::::::::::::::::::::::: keypoints 
-
-- 
-::::::::::::::::::::::::::::::::::::::::::::::::
-

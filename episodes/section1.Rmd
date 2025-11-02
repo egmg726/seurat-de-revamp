@@ -7,13 +7,21 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- hello!
+- How do we identify and remove low-quality cells in scRNA-seq data?
+- What signs suggest batch effects between treatment conditions?
+- When and why do we need to integrate datasets before downstream analysis?
+- How do Harmony and Seurat CCA compare in aligning similar cell types?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- hello!
+- Load and inspect a Seurat single-cell dataset (e.g., ifnb).
+- Perform basic quality control and filtering using mitochondrial content and feature counts.
+- Visualise data distributions with violin plots and scatterplots.
+- Recognise when integration is needed and apply both Harmony and CCA integration methods.
+- Perform initial clustering and visualise condition alignment in UMAP space.
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -41,8 +49,6 @@ library(grid)
 library(metap)
 library(harmony)
 library(DropletUtils)
-<!-- library(scater) -->
-library(scdblfinder)
 library(ggplot2)
 
 set.seed(4242) # Set Seed for Reproducibility
@@ -60,9 +66,7 @@ library(grid)
 library(metap)
 library(harmony)
 library(DropletUtils)
-# library(scater)
 library(ggplot2)
-library(scDblFinder)
 
 set.seed(4242) # Set Seed for Reproducibility
 ```
@@ -233,9 +237,13 @@ ifnb
 ``` {r}
 ifnb.filtered
 ```
-Barcode rank plot 
-- Shows the distribution of UMI totals among kept cells
-```{r}
+::::::::::::::::::::::::::::::::::::: challenge 
+Running `DropletUtils::barcodeRanks()` 
+
+:::::::::::::::::::::::: solution 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Shows the distribution of UMI totals among kept cells
 # Split Seurat object by treatment group
 ifnb.list <- SplitObject(ifnb, split.by = "orig.ident")
 
@@ -284,6 +292,11 @@ ggplot(df.all, aes(x = rank, y = total)) +
 ```
 
 
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
+
+
 Next we need to split our count matrices based on conditions. This step
 stores stimulated versus unstimulated expression information separately,
 creating a list of RNA assays grouped by the "stim" condition. Note:
@@ -293,81 +306,6 @@ this is important for downstream integration steps in Seurat v5.
 ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim) # Lets split our count matrices based on conditions (stored within different layers) -> needed for integration steps in Seurat v5
 ```
 
-
-::::::::::::::::::::::::::::::::::::: challenge
-##Checking for doublets 
-
-:::::::::::::::: solution
-```{r}
-# Variance modelling 
-set.seed(42)
-dec <- modelGeneVarByPoisson(sce)
-top.hvg <- getTopHVGs(dec, prop = 0.1)
-
-# Dimensionality reduction (PCA and t-SNE)
-set.seed(101010011)
-sce <- denoisePCA(sce, technical = dec, subset.row = top.hvg)
-sce <- runTSNE(sce, dimred = "PCA")
-
-#Clustering (graph-based)
-set.seed(101)
-snn.gr <- buildSNNGraph(sce, use.dimred = "PCA", k = 25)
-colLabels(sce) <- factor(igraph::cluster_walktrap(snn.gr)$membership)
-
-# Build SNN graph and assign cluster labels
-# set.seed(101)
-# snn.gr <- buildSNNGraph(sce, use.dimred = "PCA", k = 25)
-# sce$cluster <- factor(igraph::cluster_walktrap(snn.gr)$membership)
-# colLabels(sce) <- sce$cluster
-# 
-# dbl.out <- findDoubletClusters(sce)
-
-dbl.dens <- computeDoubletDensity(
-  sce,
-  subset.row = top.hvg,
-  d = ncol(reducedDim(sce))
-)
-
-sce$DoubletScore <- dbl.dens
-
-# Visualize
-plotTSNE(sce, colour_by = "DoubletScore")
-```
-:::::::::::::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::
-
-Cell cycle scoring 
-
-Check 1 — BEFORE integration (after PCA / pre-Harmony/CCA) (Additional code)
-
-```{r}
-library(SeuratData)
-# ---- Cell-cycle check (PRE-integration) ----
-if (!exists("cc.genes.updated.2019")) data("cc.genes.updated.2019", package = "Seurat")
-
-# Score S/G2M
-ifnb.filtered <- CellCycleScoring(
-  ifnb.filtered,
-  s.features   = cc.genes.updated.2019$s.genes,
-  g2m.features = cc.genes.updated.2019$g2m.genes,
-  set.ident    = FALSE,
-  search       = TRUE
-)
-
-# Quick UMAP on PCA (if you haven't already run it)
-if (!"umap" %in% Reductions(ifnb.filtered)) {
-  ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = "pca")
-}
-
-# Visual + quick quant
-DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
-
-emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
-pc_cor_S   <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$S.Score))
-pc_cor_G2M <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$G2M.Score))
-print(cbind(PC=1:20, r_S=round(pc_cor_S,3), r_G2M=round(pc_cor_G2M,3)))
-
-```
 
 
 ### Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
@@ -407,6 +345,43 @@ DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our
 DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
+
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell Cycle Check 1 — BEFORE integration (after PCA / pre-Harmony/CCA) 
+
+:::::::::::::::::::::::: solution 
+
+```{r}
+# ---- Cell-cycle check (PRE-integration) ----
+if (!exists("cc.genes.updated.2019")) data("cc.genes.updated.2019", package = "Seurat")
+
+# Score S/G2M
+ifnb.filtered <- CellCycleScoring(
+  ifnb.filtered,
+  s.features   = cc.genes.updated.2019$s.genes,
+  g2m.features = cc.genes.updated.2019$g2m.genes,
+  set.ident    = FALSE,
+  search       = TRUE
+)
+
+# Quick UMAP on PCA (if you haven't already run it)
+if (!"umap" %in% Reductions(ifnb.filtered)) {
+  ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = "pca")
+}
+
+# Visual + quick quant
+DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
+
+emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
+pc_cor_S   <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$S.Score))
+pc_cor_G2M <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$G2M.Score))
+print(cbind(PC=1:20, r_S=round(pc_cor_S,3), r_G2M=round(pc_cor_G2M,3)))
+
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 These are PBMCs before and after treatment, there should be cells that
 are similar between both conditions, it looks like we'll have to run
@@ -519,7 +494,9 @@ ifnb.filtered <- JoinLayers(ifnb.filtered)
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
-- 
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -552,7 +529,7 @@ Idents(ifnb.filtered) <- "kmeans_k5"
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
-Check 2 — AFTER integration (after umap.cca + clustering)
+Cell-Cycle Check 2 — AFTER integration (after umap.cca + clustering)
 
 :::::::::::::::::::::::: solution 
 
