@@ -2,7 +2,7 @@
 episodes/*html
 site/*
 !site/README.md
-
+renv/
 # History files
 .Rhistory
 .Rapp.history
