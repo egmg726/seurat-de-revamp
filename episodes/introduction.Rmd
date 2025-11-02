@@ -6,7 +6,7 @@ exercises: 2
 
 # scRNA-seq Integration and Differential Expression
 
-[**Slides available here.**](files/seurat-de-slides.pdf)
+[**Slides available here.**](files/Seurate-DE-slides-NEW.pdf)
 
 **Author:** Manveer Chauhan, Clark Lab, The University of Melbourne.\
 **Contributors:** Vini Salazar, Melbourne Bioinformatics.
