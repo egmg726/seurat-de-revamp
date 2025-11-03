@@ -6,13 +6,19 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- 
+- How do conserved markers help us label clusters reliably across conditions?
+- What exactly do avg_log2FC, pct.1, pct.2, and p_val_adj mean in FindMarkers?
+- Why must DE be run within a cell type (e.g., CD16 Mono_STIM vs CD16 Mono_CTRL) rather than “all cells”?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- 
+- Use FindConservedMarkers() to pick markers and label clusters.
+- Set identities to annotations and create compound identities (celltype.and.stim) for clean contrasts.
+- Run FindMarkers() to get DEGs between conditions within a cell type and interpret key columns.
+- Visualize DEGs (FeaturePlot with split.by, DoHeatmap / pheatmap) and export results for downstream use.
+- Recognize pitfalls (composition effects, inappropriate contrasts, overly lenient thresholds).
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -38,17 +44,6 @@ Elapsed time: 2 seconds
 DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
-``` warning
-Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`.
-ℹ See also `vignette("ggplot2-in-packages")` for more information.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
 <img src="fig/section2-rendered-unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
 
@@ -67,16 +62,6 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
 ## Let's look at conserved markers in cluster 4 across our two conditions (compared to all other clusters)
 markers.cluster.4 <- FindConservedMarkers(ifnb.filtered, ident.1 = 4,
                      grouping.var = 'stim')
-```
-
-``` warning
-Warning: `PackageCheck()` was deprecated in SeuratObject 5.0.0.
-ℹ Please use `rlang::check_installed()` instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
 ```
 
 ``` output
@@ -147,16 +132,6 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
             features = c('VMO1', 'FCGR3A', 'MS4A7', 'CXCL16'), min.cutoff = 'q10')
 ```
 
-``` warning
-Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
 <img src="fig/section2-rendered-unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 
@@ -201,7 +176,6 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 <img src="fig/section2-rendered-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 
-
 :::: callout
 
 If you want to perform cell-type identification on your own data
@@ -210,7 +184,6 @@ methods can be a good starting point. This approach is discussed in more
 detail in the Intro to scRNA-seq workshop material.
 
 ::::
-
 
 
 ### Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
@@ -312,7 +285,7 @@ DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
 
 ``` warning
 Warning in DoHeatmap(ifnb.filtered, features = top5$gene, label = FALSE): The
-following features were omitted as they were not found in the scale.data slot
+following features were omitted as they were not found in the scale.data layer
 for the RNA assay: EIF1, BLNK, RPS15A, GIMAP5, LINC00926, RPL21, RPL13, RPL7,
 RPS3A, RPS6, RPL14, RPS16, RPL3, PABPC1, CPLX1
 ```
@@ -326,8 +299,8 @@ DEG.heatmap
 
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
-
-- 
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
-

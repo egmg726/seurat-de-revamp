@@ -7,13 +7,21 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- hello!
+- How do we identify and remove low-quality cells in scRNA-seq data?
+- What signs suggest batch effects between treatment conditions?
+- When and why do we need to integrate datasets before downstream analysis?
+- How do Harmony and Seurat CCA compare in aligning similar cell types?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- hello!
+- Load and inspect a Seurat single-cell dataset (e.g., ifnb).
+- Perform basic quality control and filtering using mitochondrial content and feature counts.
+- Visualise data distributions with violin plots and scatterplots.
+- Recognise when integration is needed and apply both Harmony and CCA integration methods.
+- Perform initial clustering and visualise condition alignment in UMAP space.
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -39,6 +47,9 @@ library(patchwork)
 library(pheatmap)
 library(grid)
 library(metap)
+library(harmony)
+library(DropletUtils)
+library(ggplot2)
 
 set.seed(4242) # Set Seed for Reproducibility
 ```
@@ -139,37 +150,6 @@ AAACATACGGCATT.1          0
 # Step 2b: Visualise QC metrics and identify filtering thresholds
 qc.metric.plts <- VlnPlot(ifnb, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) + 
   ggtitle("Before Filtering")
-```
-
-``` warning
-Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
-``` warning
-Warning: `PackageCheck()` was deprecated in SeuratObject 5.0.0.
-ℹ Please use `rlang::check_installed()` instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
-``` warning
-Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`.
-ℹ See also `vignette("ggplot2-in-packages")` for more information.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
 ```
 
 ``` warning
@@ -347,7 +327,17 @@ An object of class Seurat
 Active assay: RNA (14053 features, 0 variable features)
  2 layers present: counts, data
 ```
+::::::::::::::::::::::::::::::::::::: challenge 
+Running `DropletUtils::barcodeRanks()` 
 
+:::::::::::::::::::::::: solution 
+
+<img src="fig/section1-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 
 Next we need to split our count matrices based on conditions. This step
@@ -368,6 +358,8 @@ Warning: Input is a v3 assay and `split()` only works for v5 assays; converting
 ``` warning
 Warning: Assay RNA changing from Assay to Assay5
 ```
+
+
 
 ### Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
 
@@ -456,7 +448,7 @@ Negative:  VMO1, FCGR3A, MS4A4A, CXCL16, MS4A7, PPM1N, HN1, LST1, SMPDL3A, ATP1B
 ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 15 PCs is adequate to capture the majority of the variation in the data, but we'll air on the higher side and consider all 20 dimensions.
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -472,19 +464,19 @@ This message will be shown once per session
 ```
 
 ``` output
-01:08:31 UMAP embedding parameters a = 0.9922 b = 1.112
+05:25:45 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:08:31 Read 13548 rows and found 20 numeric columns
+05:25:45 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:08:31 Using Annoy for neighbor search, n_neighbors = 30
+05:25:45 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:08:31 Building Annoy index with metric = cosine, n_trees = 50
+05:25:45 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -497,21 +489,21 @@ This message will be shown once per session
 
 ``` output
 **************************************************|
-01:08:32 Writing NN index file to temp file /tmp/Rtmp3CwSwH/file28db25e1f26
-01:08:32 Searching Annoy index using 1 thread, search_k = 3000
-01:08:37 Annoy recall = 100%
-01:08:38 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:08:40 Initializing from normalized Laplacian + noise (using RSpectra)
-01:08:40 Commencing optimization for 200 epochs, with 582700 positive edges
-01:08:40 Using rng type: pcg
-01:08:47 Optimization finished
+05:25:46 Writing NN index file to temp file /tmp/RtmpW0Ky2L/file8e9a69ec6d33
+05:25:46 Searching Annoy index using 1 thread, search_k = 3000
+05:25:50 Annoy recall = 100%
+05:25:51 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+05:25:54 Initializing from normalized Laplacian + noise (using RSpectra)
+05:25:54 Commencing optimization for 200 epochs, with 582700 positive edges
+05:25:54 Using rng type: pcg
+05:26:00 Optimization finished
 ```
 
 ``` r
 DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -520,9 +512,131 @@ DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our
 DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell Cycle Check 1 — BEFORE integration (after PCA / pre-Harmony/CCA) 
+
+:::::::::::::::::::::::: solution 
+
+
+``` r
+# ---- Cell-cycle check (PRE-integration) ----
+if (!exists("cc.genes.updated.2019")) data("cc.genes.updated.2019", package = "Seurat")
+
+# Score S/G2M
+ifnb.filtered <- CellCycleScoring(
+  ifnb.filtered,
+  s.features   = cc.genes.updated.2019$s.genes,
+  g2m.features = cc.genes.updated.2019$g2m.genes,
+  set.ident    = FALSE,
+  search       = TRUE
+)
+```
+
+``` warning
+Warning: The following features are not present in the object: DTL, UHRF1,
+CDC45, EXO1, CASP8AP2, E2F8, attempting to find updated synonyms
+```
+
+``` warning
+Warning: No updated symbols found
+```
+
+``` warning
+Warning: The following features are still not present in the object: DTL,
+UHRF1, CDC45, EXO1, CASP8AP2, E2F8
+```
+
+``` warning
+Warning: The following features are not present in the object: PIMREG, CKAP2L,
+HJURP, JPT1, CDC25C, KIF2C, DLGAP5, ANLN, attempting to find updated synonyms
+```
+
+``` warning
+Warning: No updated symbols found
+```
+
+``` warning
+Warning: The following features are still not present in the object: PIMREG,
+CKAP2L, HJURP, JPT1, CDC25C, KIF2C, DLGAP5, ANLN
+```
+
+``` warning
+Warning: The following features are not present in the object: DTL, UHRF1,
+CDC45, EXO1, CASP8AP2, E2F8, attempting to find updated synonyms
+```
+
+``` warning
+Warning: No updated symbols found
+```
+
+``` warning
+Warning: The following features are still not present in the object: DTL,
+UHRF1, CDC45, EXO1, CASP8AP2, E2F8
+```
+
+``` warning
+Warning: The following features are not present in the object: PIMREG, CKAP2L,
+HJURP, JPT1, CDC25C, KIF2C, DLGAP5, ANLN, attempting to find updated synonyms
+```
+
+``` warning
+Warning: No updated symbols found
+```
+
+``` warning
+Warning: The following features are still not present in the object: PIMREG,
+CKAP2L, HJURP, JPT1, CDC25C, KIF2C, DLGAP5, ANLN
+```
+
+``` r
+# Quick UMAP on PCA (if you haven't already run it)
+if (!"umap" %in% Reductions(ifnb.filtered)) {
+  ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = "pca")
+}
+
+# Visual + quick quant
+DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+
+``` r
+emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
+pc_cor_S   <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$S.Score))
+pc_cor_G2M <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$G2M.Score))
+print(cbind(PC=1:20, r_S=round(pc_cor_S,3), r_G2M=round(pc_cor_G2M,3)))
+```
+
+``` output
+      PC    r_S  r_G2M
+ [1,]  1 -0.262 -0.245
+ [2,]  2  0.065  0.048
+ [3,]  3  0.023  0.038
+ [4,]  4  0.002 -0.020
+ [5,]  5 -0.003  0.015
+ [6,]  6 -0.003  0.090
+ [7,]  7 -0.045 -0.038
+ [8,]  8  0.007 -0.010
+ [9,]  9 -0.014  0.012
+[10,] 10 -0.021 -0.061
+[11,] 11 -0.006  0.064
+[12,] 12 -0.008  0.008
+[13,] 13  0.031  0.042
+[14,] 14  0.008 -0.027
+[15,] 15  0.011  0.015
+[16,] 16 -0.014 -0.007
+[17,] 17 -0.010  0.011
+[18,] 18  0.009  0.006
+[19,] 19  0.003  0.027
+[20,] 20 -0.015  0.026
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 These are PBMCs before and after treatment, there should be cells that
 are similar between both conditions, it looks like we'll have to run
@@ -542,7 +656,6 @@ from both conditions)?
 
 
 ::::
-
 
 ### Step 4: Integrating our data using the harmony method
 
@@ -582,21 +695,21 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, redu
 ```
 
 ``` output
-01:09:00 UMAP embedding parameters a = 0.9922 b = 1.112
-01:09:00 Read 13548 rows and found 20 numeric columns
-01:09:00 Using Annoy for neighbor search, n_neighbors = 30
-01:09:00 Building Annoy index with metric = cosine, n_trees = 50
+05:26:17 UMAP embedding parameters a = 0.9922 b = 1.112
+05:26:17 Read 13548 rows and found 20 numeric columns
+05:26:17 Using Annoy for neighbor search, n_neighbors = 30
+05:26:17 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-01:09:01 Writing NN index file to temp file /tmp/Rtmp3CwSwH/file28db45c42779
-01:09:01 Searching Annoy index using 1 thread, search_k = 3000
-01:09:06 Annoy recall = 100%
-01:09:07 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:09:09 Initializing from normalized Laplacian + noise (using RSpectra)
-01:09:09 Commencing optimization for 200 epochs, with 586936 positive edges
-01:09:09 Using rng type: pcg
-01:09:16 Optimization finished
+05:26:18 Writing NN index file to temp file /tmp/RtmpW0Ky2L/file8e9a55512fe8
+05:26:18 Searching Annoy index using 1 thread, search_k = 3000
+05:26:23 Annoy recall = 100%
+05:26:24 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+05:26:26 Initializing from normalized Laplacian + noise (using RSpectra)
+05:26:27 Commencing optimization for 200 epochs, with 586822 positive edges
+05:26:27 Using rng type: pcg
+05:26:33 Optimization finished
 ```
 
 ``` r
@@ -608,7 +721,7 @@ before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "sti
 before.integration | after.harmony
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
 
 :::: discussion
@@ -637,32 +750,12 @@ ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
 Finding all pairwise anchors
 ```
 
-``` warning
-Warning: The `slot` argument of `GetAssayData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
 ``` output
 Running CCA
 ```
 
 ``` output
 Merging objects
-```
-
-``` warning
-Warning: The `slot` argument of `SetAssayData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
 ```
 
 ``` output
@@ -702,19 +795,19 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 ```
 
 ``` output
-01:12:17 UMAP embedding parameters a = 0.9922 b = 1.112
+05:29:27 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:12:17 Read 13548 rows and found 20 numeric columns
+05:29:27 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:12:17 Using Annoy for neighbor search, n_neighbors = 30
+05:29:27 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:12:17 Building Annoy index with metric = cosine, n_trees = 50
+05:29:27 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -727,14 +820,14 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 
 ``` output
 **************************************************|
-01:12:18 Writing NN index file to temp file /tmp/Rtmp3CwSwH/file28db6ef47b73
-01:12:18 Searching Annoy index using 1 thread, search_k = 3000
-01:12:23 Annoy recall = 100%
-01:12:24 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:12:26 Initializing from normalized Laplacian + noise (using RSpectra)
-01:12:27 Commencing optimization for 200 epochs, with 595526 positive edges
-01:12:27 Using rng type: pcg
-01:12:33 Optimization finished
+05:29:28 Writing NN index file to temp file /tmp/RtmpW0Ky2L/file8e9a33f752c1
+05:29:28 Searching Annoy index using 1 thread, search_k = 3000
+05:29:33 Annoy recall = 100%
+05:29:34 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+05:29:36 Initializing from normalized Laplacian + noise (using RSpectra)
+05:29:37 Commencing optimization for 200 epochs, with 595526 positive edges
+05:29:37 Using rng type: pcg
+05:29:43 Optimization finished
 ```
 
 ``` r
@@ -744,7 +837,7 @@ after.seuratCCA <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "st
 before.integration | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -753,7 +846,7 @@ before.integration | after.seuratCCA
 after.harmony | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ## Show example slide of integration 'failing' but due to different cell types in each sample ***
@@ -802,7 +895,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 ``` r
@@ -812,7 +905,75 @@ ifnb.filtered <- JoinLayers(ifnb.filtered)
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
-- 
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::: challenge 
+K-means clustering
+
+:::::::::::::::::::::::: solution 
+
+
+``` r
+# K-means
+emb <- Embeddings(ifnb.filtered, "pca")[, 1:20]
+set.seed(1)
+km <- kmeans(emb, centers = 5, nstart = 50)
+
+ifnb.filtered$kmeans_k5 <- factor(km$cluster)
+
+# Compare labelings
+p1 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "seurat_clusters") + ggtitle("Louvain")
+p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k5") + ggtitle("k-means (K=5)")
+p1 | p2
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
+
+``` r
+# If you decide to proceed with k-means downstream:
+Idents(ifnb.filtered) <- "kmeans_k5"
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
+
+
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell-Cycle Check 2 — AFTER integration (after umap.cca + clustering)
+
+:::::::::::::::::::::::: solution 
+
+
+``` r
+# ---- Cell-cycle check (POST-integration) ----
+
+# Visual on integrated embedding
+DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
+
+``` r
+# Phase composition by cluster and by condition
+tab_phase_cluster <- prop.table(table(ifnb.filtered$seurat_clusters, ifnb.filtered$Phase), 1) * 100
+tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filtered$Phase), 1) * 100
+pheatmap(tab_phase_cluster, main = "Phase (%) by cluster")
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-22-2.png" style="display: block; margin: auto;" />
+
+``` r
+pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-22-3.png" style="display: block; margin: auto;" />
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 

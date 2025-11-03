@@ -23,7 +23,7 @@ This lesson assumes you have R and RStudio installed on your computer.
 
 ::::::::::::::::::::::::::::::::::::::: discussion
 
-If you not have R and RStudio already installed, please download them here:
+If you don't have R and RStudio already installed, please download them here:
 
 [Download and install the latest version of R using the UniMelb mirror](https://cran.ms.unimelb.edu.au/).
 [Download and install RStudio](https://posit.co/download/rstudio-desktop/#download).
@@ -52,10 +52,13 @@ if (!require("BiocManager", quietly = TRUE)) {
 }
 BiocManager::install("DESeq2")
 BiocManager::install("multtest") # dependency commonly missing
+BiocManager::install("DropletUtils")
+
 install.packages("harmony") # dependency needed for harmony analysis
 
 install.packages("tidyverse")
 install.packages("pheatmap")
 install.packages("metap")
+install.packages("ggplot2")
 ```
 

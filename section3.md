@@ -6,13 +6,22 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- 
+- Why aggregate to pseudobulk instead of testing each cell?
+- How does donor act as the biological replicate in DESeq2?
+- When do pseudobulk and single-cell DE agree or disagree, and why (e.g., zero inflation, composition, variance models)?
+- What minimum sampling per group (cells per donor, donors per group) is sensible before aggregating?
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- 
+- Attach donor IDs to cells and create pseudobulk matrices with AggregateExpression().
+- Run DESeq2 from Seurat via FindMarkers(test.use="DESeq2") on pseudobulk objects.
+- Inspect and interpret key outputs (adjusted p-values, log2FC) and compare to single-cell DE.
+- Visualize consensus/unique DEGs and make a publication-ready heatmap with pheatmap.
+- Recognize pitfalls (uneven donor coverage, tiny groups, composition shifts) and report limitations.
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -26,7 +35,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 ## Section 3 : Differential Expression using a pseudobulk approach and DESeq2
@@ -368,27 +377,6 @@ VlnPlot(ifnb.filtered, features = c("PABPC1", "SRGN"),
         group.by = "stim") 
 ```
 
-``` warning
-Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
-``` warning
-Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`.
-ℹ See also `vignette("ggplot2-in-packages")` for more information.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at <https://github.com/satijalab/seurat/issues>.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.
-```
-
 <img src="fig/section3-rendered-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 
@@ -589,7 +577,8 @@ What kind of analyses do you think we can do next after obtaining a list of diff
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
--
+- Collapse single-cell counts to pseudobulk per donor × condition × cell type.
+- Compare single-cell DE vs pseudobulk DE.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 

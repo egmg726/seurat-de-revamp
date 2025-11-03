@@ -4,23 +4,9 @@ teaching: 10
 exercises: 2
 ---
 
-:::::::::::::::::::::::::::::::::::::: questions 
-
-- 
-
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-::::::::::::::::::::::::::::::::::::: objectives
-
-- 
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-
-
-
 # scRNA-seq Integration and Differential Expression
 
-[**Slides available here.**](files/seurat-de-slides.pdf)
+[**Slides available here.**](files/Seurate-DE-slides-NEW.pdf)
 
 **Author:** Manveer Chauhan, Clark Lab, The University of Melbourne.\
 **Contributors:** Vini Salazar, Melbourne Bioinformatics.
@@ -92,12 +78,3 @@ material from:
 * https://bookdown.org/ytliu13207/SingleCellMultiOmicsDataAnalysis/
 
 ::::
-
-
-
-
-::::::::::::::::::::::::::::::::::::: keypoints 
-
-- 
-::::::::::::::::::::::::::::::::::::::::::::::::
-
