@@ -7,13 +7,21 @@ exercises: 2
 
 :::::::::::::::::::::::::::::::::::::: questions 
 
-- hello!
+- How do we identify and remove low-quality cells in scRNA-seq data?
+- What signs suggest batch effects between treatment conditions?
+- When and why do we need to integrate datasets before downstream analysis?
+- How do Harmony and Seurat CCA compare in aligning similar cell types?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- hello!
+- Load and inspect a Seurat single-cell dataset (e.g., ifnb).
+- Perform basic quality control and filtering using mitochondrial content and feature counts.
+- Visualise data distributions with violin plots and scatterplots.
+- Recognise when integration is needed and apply both Harmony and CCA integration methods.
+- Perform initial clustering and visualise condition alignment in UMAP space.
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -39,6 +47,9 @@ library(patchwork)
 library(pheatmap)
 library(grid)
 library(metap)
+library(harmony)
+library(DropletUtils)
+library(ggplot2)
 
 set.seed(4242) # Set Seed for Reproducibility
 ```
@@ -46,7 +57,7 @@ set.seed(4242) # Set Seed for Reproducibility
 
 ``` {r, echo=FALSE,message=FALSE,warning=FALSE}
 library(Seurat)
-#library(SeuratData)
+# library(SeuratData)
 library(tidyverse)
 library(DESeq2)
 library(patchwork)
@@ -54,6 +65,8 @@ library(pheatmap)
 library(grid)
 library(metap)
 library(harmony)
+library(DropletUtils)
+library(ggplot2)
 
 set.seed(4242) # Set Seed for Reproducibility
 ```
@@ -224,7 +237,64 @@ ifnb
 ``` {r}
 ifnb.filtered
 ```
+::::::::::::::::::::::::::::::::::::: challenge 
+Running `DropletUtils::barcodeRanks()` 
 
+:::::::::::::::::::::::: solution 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Shows the distribution of UMI totals among kept cells
+# Split Seurat object by treatment group
+ifnb.list <- SplitObject(ifnb, split.by = "orig.ident")
+
+# Run barcodeRanks() on each treatment group
+br.list <- lapply(names(ifnb.list), function(grp) {
+  counts_mat <- as.matrix(GetAssayData(ifnb.list[[grp]], slot = "counts"))
+  br <- barcodeRanks(counts_mat)
+  
+  df <- data.frame(
+    rank = br$rank,
+    total = br$total,
+    treatment = grp
+  )
+  attr(df, "meta") <- metadata(br) # save knee/inflection
+  df
+})
+
+# Combine into one dataframe
+df.all <- do.call(rbind, br.list)
+
+# Extract metadata (knee & inflection per group)
+# meta.df <- do.call(rbind, lapply(br.list, function(d) {
+#   data.frame(
+#     treatment = unique(d$treatment),
+#     knee = attr(d, "meta")$knee,
+#     inflection = attr(d, "meta")$inflection
+#   )
+# }))
+
+# Plot faceted barcode rank plots
+ggplot(df.all, aes(x = rank, y = total)) +
+  geom_point(size = 0.4, alpha = 0.6) +
+  # geom_hline(data = meta.df, aes(yintercept = knee), 
+  #            color = "dodgerblue", linetype = "dashed") +
+  # geom_hline(data = meta.df, aes(yintercept = inflection), 
+  #            color = "forestgreen", linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_log10() +
+  facet_wrap(~ treatment, ncol = 2, scales = "free") +
+  labs(
+    x = "Barcode Rank",
+    y = "Total UMI Count",
+    title = "Barcode Rank Plots (Post-Filtering)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 
 Next we need to split our count matrices based on conditions. This step
@@ -235,6 +305,8 @@ this is important for downstream integration steps in Seurat v5.
 ``` {r}
 ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim) # Lets split our count matrices based on conditions (stored within different layers) -> needed for integration steps in Seurat v5
 ```
+
+
 
 ### Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
 
@@ -274,6 +346,42 @@ DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our 
 ```
 
 
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell Cycle Check 1 — BEFORE integration (after PCA / pre-Harmony/CCA) 
+
+:::::::::::::::::::::::: solution 
+
+```{r}
+# ---- Cell-cycle check (PRE-integration) ----
+if (!exists("cc.genes.updated.2019")) data("cc.genes.updated.2019", package = "Seurat")
+
+# Score S/G2M
+ifnb.filtered <- CellCycleScoring(
+  ifnb.filtered,
+  s.features   = cc.genes.updated.2019$s.genes,
+  g2m.features = cc.genes.updated.2019$g2m.genes,
+  set.ident    = FALSE,
+  search       = TRUE
+)
+
+# Quick UMAP on PCA (if you haven't already run it)
+if (!"umap" %in% Reductions(ifnb.filtered)) {
+  ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = "pca")
+}
+
+# Visual + quick quant
+DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
+
+emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
+pc_cor_S   <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$S.Score))
+pc_cor_G2M <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$G2M.Score))
+print(cbind(PC=1:20, r_S=round(pc_cor_S,3), r_G2M=round(pc_cor_G2M,3)))
+
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 These are PBMCs before and after treatment, there should be cells that
 are similar between both conditions, it looks like we'll have to run
@@ -293,7 +401,6 @@ from both conditions)?
 
 
 ::::
-
 
 ### Step 4: Integrating our data using the harmony method
 
@@ -387,7 +494,59 @@ ifnb.filtered <- JoinLayers(ifnb.filtered)
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
-- 
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::: challenge 
+K-means clustering
+
+:::::::::::::::::::::::: solution 
+
+```{r}
+# K-means
+emb <- Embeddings(ifnb.filtered, "pca")[, 1:20]
+set.seed(1)
+km <- kmeans(emb, centers = 5, nstart = 50)
+
+ifnb.filtered$kmeans_k5 <- factor(km$cluster)
+
+# Compare labelings
+p1 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "seurat_clusters") + ggtitle("Louvain")
+p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k5") + ggtitle("k-means (K=5)")
+p1 | p2
+
+# If you decide to proceed with k-means downstream:
+Idents(ifnb.filtered) <- "kmeans_k5"
+
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
+
+
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell-Cycle Check 2 — AFTER integration (after umap.cca + clustering)
+
+:::::::::::::::::::::::: solution 
+
+```{r}
+# ---- Cell-cycle check (POST-integration) ----
+
+# Visual on integrated embedding
+DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
+
+# Phase composition by cluster and by condition
+tab_phase_cluster <- prop.table(table(ifnb.filtered$seurat_clusters, ifnb.filtered$Phase), 1) * 100
+tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filtered$Phase), 1) * 100
+pheatmap(tab_phase_cluster, main = "Phase (%) by cluster")
+pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
+```
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
