@@ -25,7 +25,7 @@ exercises: 2
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
-### Step 1. Load the packages and data
+## Step 1. Load the packages and data
 
 Today we'll be working with Seurat (a popular scRNA-seq analysis
 package). SeuratData will be used to load in the experimental data we're
@@ -104,7 +104,7 @@ When loading in seurat objects, we can have a look at what processing steps have
 
 :::::::::::::::::::::::::::::::::::
 
-### Step 2: Run QC, filter out low quality cells
+## Step 2: Run QC, filter out low quality cells
 
 Lets start by processing our data (run the standard seurat workflow
 steps including preprocessing and filtering).
@@ -112,13 +112,20 @@ steps including preprocessing and filtering).
 First we need to take a look at QC metrics, then decide on the
 thresholds for filtering.
 
+::::::::::::::::::::::::::::::::::::: challenge 
 
-:::::::: discussion
+QC for droplet-based protocols 
 
-Looking at the violin plots of QC metrics, what do you
-think about the overall quality of the ifnb dataset?
+:::::::::::::::::::::::: solution 
 
-::::::::
+In droplet-based protocols (e.g., 10x Genomics), millions of droplets are formed, but only some droplets contain exactly one real cell. Several types of “bad droplets” appear:
+
+- Empty droplets (no real cell)
+- Doublets (two cells in one droplet)
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 
 
@@ -176,6 +183,12 @@ association.plt.raw
 
 <img src="fig/section1-rendered-unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
 
+:::::::: discussion
+
+Looking at the violin plots of QC metrics, what do you
+think about the overall quality of the ifnb dataset?
+
+::::::::
 
 After visualising QC metrics, we'll move on to the actual filtering
 
@@ -327,17 +340,7 @@ An object of class Seurat
 Active assay: RNA (14053 features, 0 variable features)
  2 layers present: counts, data
 ```
-::::::::::::::::::::::::::::::::::::: challenge 
-Running `DropletUtils::barcodeRanks()` 
 
-:::::::::::::::::::::::: solution 
-
-<img src="fig/section1-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
-
-
-:::::::::::::::::::::::::::::::::
-
-:::::::::::::::::::::::::::::::::::
 
 
 Next we need to split our count matrices based on conditions. This step
@@ -361,7 +364,7 @@ Warning: Assay RNA changing from Assay to Assay5
 
 
 
-### Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
+## Step 3: Before performing differential expression between the two conditions, let's assess whether we need to integrate our data
 
 After filtering out low quality cells, we want to visualise our data to
 see how cells group by condition and if we need to perform batch-effect
@@ -448,7 +451,7 @@ Negative:  VMO1, FCGR3A, MS4A4A, CXCL16, MS4A7, PPM1N, HN1, LST1, SMPDL3A, ATP1B
 ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 15 PCs is adequate to capture the majority of the variation in the data, but we'll air on the higher side and consider all 20 dimensions.
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -464,19 +467,19 @@ This message will be shown once per session
 ```
 
 ``` output
-01:09:01 UMAP embedding parameters a = 0.9922 b = 1.112
+01:03:38 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:09:01 Read 13548 rows and found 20 numeric columns
+01:03:38 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:09:01 Using Annoy for neighbor search, n_neighbors = 30
+01:03:38 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:09:01 Building Annoy index with metric = cosine, n_trees = 50
+01:03:38 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -489,21 +492,21 @@ This message will be shown once per session
 
 ``` output
 **************************************************|
-01:09:02 Writing NN index file to temp file /tmp/Rtmps9QuLp/file14ec357d6f04
-01:09:02 Searching Annoy index using 1 thread, search_k = 3000
-01:09:07 Annoy recall = 100%
-01:09:08 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:09:10 Initializing from normalized Laplacian + noise (using RSpectra)
-01:09:10 Commencing optimization for 200 epochs, with 582700 positive edges
-01:09:10 Using rng type: pcg
-01:09:16 Optimization finished
+01:03:39 Writing NN index file to temp file /tmp/Rtmpg8yrre/file163db9a4ad7
+01:03:39 Searching Annoy index using 1 thread, search_k = 3000
+01:03:43 Annoy recall = 100%
+01:03:44 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:03:46 Initializing from normalized Laplacian + noise (using RSpectra)
+01:03:47 Commencing optimization for 200 epochs, with 582700 positive edges
+01:03:47 Using rng type: pcg
+01:03:53 Optimization finished
 ```
 
 ``` r
 DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -512,7 +515,7 @@ DimPlot(ifnb.filtered, reduction = 'umap', group.by = 'stim') # lets see how our
 DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
@@ -601,7 +604,7 @@ if (!"umap" %in% Reductions(ifnb.filtered)) {
 DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 ``` r
 emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
@@ -657,7 +660,7 @@ from both conditions)?
 
 ::::
 
-### Step 4: Integrating our data using the harmony method
+## Step 4: Integrating our data using the harmony method
 
 Seurat v5 has made it really easy to test different integration methods
 quickly, let's use a really popular approach (harmony) first.
@@ -695,21 +698,21 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, redu
 ```
 
 ``` output
-01:09:33 UMAP embedding parameters a = 0.9922 b = 1.112
-01:09:33 Read 13548 rows and found 20 numeric columns
-01:09:33 Using Annoy for neighbor search, n_neighbors = 30
-01:09:33 Building Annoy index with metric = cosine, n_trees = 50
+01:04:11 UMAP embedding parameters a = 0.9922 b = 1.112
+01:04:11 Read 13548 rows and found 20 numeric columns
+01:04:11 Using Annoy for neighbor search, n_neighbors = 30
+01:04:11 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-01:09:34 Writing NN index file to temp file /tmp/Rtmps9QuLp/file14ec3f37bc10
-01:09:34 Searching Annoy index using 1 thread, search_k = 3000
-01:09:38 Annoy recall = 100%
-01:09:39 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:09:41 Initializing from normalized Laplacian + noise (using RSpectra)
-01:09:42 Commencing optimization for 200 epochs, with 586822 positive edges
-01:09:42 Using rng type: pcg
-01:09:48 Optimization finished
+01:04:12 Writing NN index file to temp file /tmp/Rtmpg8yrre/file163d1fbf007f
+01:04:12 Searching Annoy index using 1 thread, search_k = 3000
+01:04:16 Annoy recall = 100%
+01:04:17 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:04:19 Initializing from normalized Laplacian + noise (using RSpectra)
+01:04:20 Commencing optimization for 200 epochs, with 586822 positive edges
+01:04:20 Using rng type: pcg
+01:04:26 Optimization finished
 ```
 
 ``` r
@@ -721,7 +724,7 @@ before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "sti
 before.integration | after.harmony
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
 
 
 :::: discussion
@@ -735,7 +738,7 @@ well
 
 
 
-### Step 5: Integrating our data using an alternative Seurat CCA
+## Step 5: Integrating our data using an alternative Seurat CCA
 method
 
 
@@ -795,19 +798,19 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 ```
 
 ``` output
-01:12:38 UMAP embedding parameters a = 0.9922 b = 1.112
+01:07:40 UMAP embedding parameters a = 0.9922 b = 1.112
 ```
 
 ``` output
-01:12:38 Read 13548 rows and found 20 numeric columns
+01:07:40 Read 13548 rows and found 20 numeric columns
 ```
 
 ``` output
-01:12:38 Using Annoy for neighbor search, n_neighbors = 30
+01:07:40 Using Annoy for neighbor search, n_neighbors = 30
 ```
 
 ``` output
-01:12:38 Building Annoy index with metric = cosine, n_trees = 50
+01:07:40 Building Annoy index with metric = cosine, n_trees = 50
 ```
 
 ``` output
@@ -820,14 +823,14 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:2
 
 ``` output
 **************************************************|
-01:12:39 Writing NN index file to temp file /tmp/Rtmps9QuLp/file14ec4f8f261a
-01:12:39 Searching Annoy index using 1 thread, search_k = 3000
-01:12:44 Annoy recall = 100%
-01:12:45 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:12:47 Initializing from normalized Laplacian + noise (using RSpectra)
-01:12:47 Commencing optimization for 200 epochs, with 595526 positive edges
-01:12:47 Using rng type: pcg
-01:12:53 Optimization finished
+01:07:41 Writing NN index file to temp file /tmp/Rtmpg8yrre/file163d7d477d1d
+01:07:41 Searching Annoy index using 1 thread, search_k = 3000
+01:07:46 Annoy recall = 100%
+01:07:47 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:07:49 Initializing from normalized Laplacian + noise (using RSpectra)
+01:07:49 Commencing optimization for 200 epochs, with 595526 positive edges
+01:07:49 Using rng type: pcg
+01:07:55 Optimization finished
 ```
 
 ``` r
@@ -837,7 +840,7 @@ after.seuratCCA <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "st
 before.integration | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -846,7 +849,7 @@ before.integration | after.seuratCCA
 after.harmony | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ## Show example slide of integration 'failing' but due to different cell types in each sample ***
@@ -864,7 +867,7 @@ What do you think of the integration results now?
 **Hint:** Also look at the PC1 and PC2 plots for each integration method.
 
 
-### Step 6: Perform standard clustering steps after integration
+## Step 6: Perform standard clustering steps after integration
 
 This step collapses individual control and treatment datasets together
 and needs to be done before differential expression analysis
@@ -895,7 +898,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 ```
 
 ``` r
@@ -931,7 +934,7 @@ p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k5") + g
 p1 | p2
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
 
 ``` r
 # If you decide to proceed with k-means downstream:
@@ -956,7 +959,7 @@ Cell-Cycle Check 2 — AFTER integration (after umap.cca + clustering)
 DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
 
 ``` r
 # Phase composition by cluster and by condition
@@ -965,13 +968,13 @@ tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filter
 pheatmap(tab_phase_cluster, main = "Phase (%) by cluster")
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-22-2.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-21-2.png" style="display: block; margin: auto;" />
 
 ``` r
 pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-22-3.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-21-3.png" style="display: block; margin: auto;" />
 
 :::::::::::::::::::::::::::::::::
 

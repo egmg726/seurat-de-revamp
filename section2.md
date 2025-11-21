@@ -32,12 +32,9 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 ```
 
-
-
-## Section 2: Differential Gene Expression when dealing with two treatment conditions
 
 
 ``` r
@@ -55,7 +52,7 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
 <img src="fig/section2-rendered-unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
 
-### Step 1. Find Conserved Markers to label our celltypes
+## Step 1. Find Conserved Markers to label our celltypes
 
 
 ``` r
@@ -159,7 +156,7 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
 <img src="fig/section2-rendered-unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 
-### Step 2: Set the identity of our clusters to the annotations provided
+## Step 2: Set the identity of our clusters to the annotations provided
 
 
 ``` r
@@ -186,7 +183,7 @@ detail in the Intro to scRNA-seq workshop material.
 ::::
 
 
-### Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
+## Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
 
 
 ``` r
@@ -233,7 +230,7 @@ IFITM3 1.056793e-161   3.191513 1.000 0.634 1.485111e-157
 IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154
 ```
 
-### Step 4: Lets plot conserved features vs DEGs between conditions
+## Step 4: Lets plot conserved features vs DEGs between conditions
 
 
 ``` r
@@ -245,7 +242,7 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
 <img src="fig/section2-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 
-### Step 5: Create a Heatmap to visualise DEGs between our two conditions + cell types
+## Step 5: Create a Heatmap to visualise DEGs between our two conditions + cell types
 
 
 ``` r

@@ -35,12 +35,10 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 ```
 
-## Section 3 : Differential Expression using a pseudobulk approach and DESeq2
-
-### Step 1: We need to import sample information for each cell from the original paper
+## Step 1: We need to import sample information for each cell from the original paper
 
 
 :::: discussion
@@ -84,7 +82,7 @@ loadDonorMetadata <- function(seu.obj){
 ifnb.filtered <- loadDonorMetadata(ifnb.filtered)
 ```
 
-### Step 2: Aggregate our counts based on treatment group, cell-type, and donor id
+## Step 2: Aggregate our counts based on treatment group, cell-type, and donor id
 
 Collapsing our single-cell matrix in this manner is referred to as
 creating a 'pseudo-bulk' count matrix.. We're making a condensed count
@@ -121,7 +119,7 @@ head(ifnb.pseudobulk.df)
 
 
 
-### Step 3: Perform Differential Expression using DESeq2
+## Step 3: Perform Differential Expression using DESeq2
 
 Just like before, lets make a new column containing the cell type and
 treatment group before DE with DESeq2. We do this so that we can
@@ -194,7 +192,7 @@ head(Cells(ifnb.pseudobulk)) # our 'cells' are no longer barcodes, but have been
 [5] "CTRL_SNG-101_B"            "CTRL_SNG-101_CD8 T"       
 ```
 
-### Step 4: Assessing differences between our pseudbulk DEGs and single-cell DEGs
+## Step 4: Assessing differences between our pseudbulk DEGs and single-cell DEGs
 
 First lets take a look at the DEG dataframes we made for both.
 
@@ -347,7 +345,7 @@ between the two methods here?
 
 
 
-### Step 5: Investigate the differences between pseudobulk DE and single-cell DE closer
+## Step 5: Investigate the differences between pseudobulk DE and single-cell DE closer
 
 Let's create lists of genes in each of our categories first
 
@@ -422,7 +420,7 @@ VlnPlot(ifnb.filtered, features = c("IFIT2", "PSMA4"),
 <img src="fig/section3-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 
-### Step 6: Creating our own custom visualisations for DEG analysis between cell-types in two different experimental groups
+## Step 6: Creating our own custom visualisations for DEG analysis between cell-types in two different experimental groups
 
 So far, we've been using functions wrapped within Seurat to plot and
 visualise our data. But we're not limited to those functions. Let's use
