@@ -316,7 +316,7 @@ conditions + cell types</a></li>
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Section 2: Differential Gene Expression when dealing with two treatment conditions</h1>
-        <p>Last updated on 2025-11-21 |
+        <p>Last updated on 2025-11-24 |
 
         <a href="https://github.com/melbournebioinformatics/workbench-template-rmd/edit/main/episodes/section2.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -375,7 +375,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds</code></pre>
+Elapsed time: 2 seconds</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -479,14 +479,14 @@ min.cutoff, or changing the value of the min.cutoff parameter.</p>
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># I happen to know that the cells in cluster 3 are CD16 monocytes - lets rename this cluster</span></span>
+<code class="sourceCode R"><span><span class="co"># I happen to know that the cells in cluster 4 are CD16 monocytes - lets rename this cluster</span></span>
 <span><span class="co"># Idents(ifnb.filtered) # Let's look at the identities of our cells at the moment</span></span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">RenameIdents</span><span class="op">(</span><span class="va">ifnb.filtered</span>, <span class="st">'4'</span> <span class="op">=</span> <span class="st">'CD16 Mono'</span><span class="op">)</span> <span class="co"># Let's rename cells in cluster 3 with a new cell type label</span></span>
+<code class="sourceCode R"><span><span class="va">ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">RenameIdents</span><span class="op">(</span><span class="va">ifnb.filtered</span>, <span class="st">'4'</span> <span class="op">=</span> <span class="st">'CD16 Mono'</span><span class="op">)</span> <span class="co"># Let's rename cells in cluster 4 with a new cell type label</span></span>
 <span><span class="co"># Idents(ifnb.filtered) # we can take a look at the cell identities again</span></span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb13">
@@ -525,9 +525,59 @@ detail in the Intro to scRNA-seq workshop material.</p>
 </div>
 </div>
 </div>
+<div id="challenge1" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div class="callout-inner">
+<h3 class="callout-title">Challenge</h3>
+<div class="callout-content">
+<p>Automated Cell Type Annotation</p>
+</div>
+</div>
+</div>
+<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
+  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
+</button>
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div class="accordion-body">
+<div class="codewrapper sourceCode" id="cb16">
+<h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load reference data </span></span>
+<span><span class="co"># Blood &amp; immune lineages</span></span>
+<span><span class="va">ref.set</span> <span class="op">&lt;-</span> <span class="fu">celldex</span><span class="fu">::</span><span class="fu">BlueprintEncodeData</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ifnb.v4</span> <span class="op">&lt;-</span> <span class="fu">JoinLayers</span><span class="op">(</span><span class="va">ifnb.filtered</span><span class="op">)</span></span>
+<span><span class="va">sce.ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">as.SingleCellExperiment</span><span class="op">(</span><span class="va">ifnb.v4</span><span class="op">)</span></span>
+<span><span class="va">sce.ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">logNormCounts</span><span class="op">(</span><span class="va">sce.ifnb.filtered</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pred.cnts</span> <span class="op">&lt;-</span> <span class="fu">SingleR</span><span class="op">(</span></span>
+<span>  test <span class="op">=</span> <span class="va">sce.ifnb.filtered</span>,</span>
+<span>  ref <span class="op">=</span> <span class="va">ref.set</span>,</span>
+<span>  labels <span class="op">=</span> <span class="va">ref.set</span><span class="op">$</span><span class="va">label.main</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lbls.keep</span> <span class="op">&lt;-</span> <span class="fu">table</span><span class="op">(</span><span class="va">pred.cnts</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">10</span></span>
+<span><span class="co"># Add SingleR labels to Seurat metadata</span></span>
+<span><span class="va">ifnb.filtered</span><span class="op">$</span><span class="va">SingleR.labels</span> <span class="op">&lt;-</span> <span class="va">sce.ifnb.filtered</span><span class="op">$</span><span class="va">SingleR.labels</span></span>
+<span><span class="va">ifnb.filtered</span><span class="op">$</span><span class="va">SingleR.labels</span> <span class="op">&lt;-</span> <span class="fu">ifelse</span><span class="op">(</span><span class="va">lbls.keep</span><span class="op">[</span><span class="va">pred.cnts</span><span class="op">$</span><span class="va">labels</span><span class="op">]</span>, <span class="va">pred.cnts</span><span class="op">$</span><span class="va">labels</span>, <span class="st">'Other'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run UMAP (based on PCA)</span></span>
+<span><span class="va">ifnb.filtered</span> <span class="op">&lt;-</span> <span class="fu">RunUMAP</span><span class="op">(</span><span class="va">ifnb.filtered</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction<span class="op">=</span><span class="st">'umap.cca'</span>, group.by<span class="op">=</span><span class="st">'SingleR.labels'</span>,  label <span class="op">=</span> <span class="cn">TRUE</span>, label.size <span class="op">=</span> <span class="fl">3</span> <span class="op">)</span></span></code></pre>
+</div>
+<figure><img src="../fig/section2-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></div>
+</div>
+</div>
+</div>
 </section><section><h2 class="section-heading" id="step-3-find-differentially-expressed-genes-degs-between-our-two-conditions-using-cd16-mono-cells-as-an-example">Step 3: Find differentially expressed genes (DEGs) between our two
 conditions, using CD16 Mono cells as an example<a class="anchor" aria-label="anchor" href="#step-3-find-differentially-expressed-genes-degs-between-our-two-conditions-using-cd16-mono-cells-as-an-example"></a></h2>
-<hr class="half-width"><div class="codewrapper sourceCode" id="cb16">
+<hr class="half-width"><div class="codewrapper sourceCode" id="cb17">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -539,16 +589,16 @@ conditions, using CD16 Mono cells as an example<a class="anchor" aria-label="anc
 <span></span>
 <span><span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"umap.cca"</span>, label <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co"># each cluster is now made up of two labels (control or stimulated)</span></span></code></pre>
 </div>
-<figure><img src="../fig/section2-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb17">
+<figure><img src="../fig/section2-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">DimPlot</span><span class="op">(</span><span class="va">ifnb.filtered</span>, reduction <span class="op">=</span> <span class="st">"umap.cca"</span>, </span>
 <span>        label <span class="op">=</span> <span class="cn">T</span>, split.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> <span class="co"># Lets separate by condition to see what we've done a bit more clearly</span></span></code></pre>
 </div>
-<figure><img src="../fig/section2-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><p>We’ll now leverage these new identities to compare DEGs between our
+<figure><img src="../fig/section2-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><p>We’ll now leverage these new identities to compare DEGs between our
 treatment groups</p>
-<div class="codewrapper sourceCode" id="cb18">
+<div class="codewrapper sourceCode" id="cb19">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -568,7 +618,7 @@ IFITM3 1.056793e-161   3.191513 1.000 0.634 1.485111e-157
 IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154</code></pre>
 </div>
 </section><section><h2 class="section-heading" id="step-4-lets-plot-conserved-features-vs-degs-between-conditions">Step 4: Lets plot conserved features vs DEGs between conditions<a class="anchor" aria-label="anchor" href="#step-4-lets-plot-conserved-features-vs-degs-between-conditions"></a></h2>
-<hr class="half-width"><div class="codewrapper sourceCode" id="cb20">
+<hr class="half-width"><div class="codewrapper sourceCode" id="cb21">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -576,9 +626,9 @@ IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154</code></pre>
 <span>            features <span class="op">=</span> <span class="fu">c</span><span class="op">(</span><span class="st">'VMO1'</span>, <span class="st">'FCGR3A'</span>, <span class="st">'IFIT1'</span>, <span class="st">'ISG15'</span><span class="op">)</span>,</span>
 <span>            split.by <span class="op">=</span> <span class="st">'stim'</span>, min.cutoff <span class="op">=</span> <span class="st">'q10'</span><span class="op">)</span></span></code></pre>
 </div>
-<figure><img src="../fig/section2-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></section><section><h2 class="section-heading" id="step-5-create-a-heatmap-to-visualise-degs-between-our-two-conditions-cell-types">Step 5: Create a Heatmap to visualise DEGs between our two
+<figure><img src="../fig/section2-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></section><section><h2 class="section-heading" id="step-5-create-a-heatmap-to-visualise-degs-between-our-two-conditions-cell-types">Step 5: Create a Heatmap to visualise DEGs between our two
 conditions + cell types<a class="anchor" aria-label="anchor" href="#step-5-create-a-heatmap-to-visualise-degs-between-our-two-conditions-cell-types"></a></h2>
-<hr class="half-width"><div class="codewrapper sourceCode" id="cb21">
+<hr class="half-width"><div class="codewrapper sourceCode" id="cb22">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -586,7 +636,7 @@ conditions + cell types<a class="anchor" aria-label="anchor" href="#step-5-creat
 <span><span class="va">ifnb.treatVsCtrl.markers</span> <span class="op">&lt;-</span> <span class="fu">FindAllMarkers</span><span class="op">(</span><span class="va">ifnb.filtered</span>,</span>
 <span>                                          only.pos <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
 </div>
-<div class="codewrapper sourceCode" id="cb22">
+<div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -598,7 +648,7 @@ rds file of the output using the code below:</p>
 interpret sometimes (we’ll learn how to make better and clearer custom
 heatmaps using the pheatmap package from our Seurat expression data
 later on).</p>
-<div class="codewrapper sourceCode" id="cb23">
+<div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -611,23 +661,11 @@ later on).</p>
 <span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">DEG.heatmap</span> <span class="op">&lt;-</span> <span class="fu">DoHeatmap</span><span class="op">(</span><span class="va">ifnb.filtered</span>, features <span class="op">=</span> <span class="va">top5</span><span class="op">$</span><span class="va">gene</span>,</span>
-<span>          label <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre>
+<span>          label <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">DEG.heatmap</span></span></code></pre>
 </div>
-<div class="codewrapper">
-<h3 class="code-label">WARNING<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="warning" tabindex="0"><code>Warning in DoHeatmap(ifnb.filtered, features = top5$gene, label = FALSE): The
-following features were omitted as they were not found in the scale.data layer
-for the RNA assay: EIF1, BLNK, RPS15A, GIMAP5, LINC00926, RPL21, RPL13, RPL7,
-RPS3A, RPS6, RPL14, RPS16, RPL3, PABPC1, CPLX1</code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb25">
-<h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DEG.heatmap</span></span></code></pre>
-</div>
-<figure><img src="../fig/section2-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div id="keypoints1" class="callout keypoints">
+<figure><img src="../fig/section2-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
 </div>
@@ -707,8 +745,8 @@ any links that you are not going to use.
   "url": "melbournebioinformatics.github.io/uom-varnish/instructor/section2.html",
   "identifier": "melbournebioinformatics.github.io/uom-varnish/instructor/section2.html",
   "dateCreated": "2025-11-01",
-  "dateModified": "2025-11-21",
-  "datePublished": "2025-11-21"
+  "dateModified": "2025-11-24",
+  "datePublished": "2025-11-24"
 }
 
   </script><script>
