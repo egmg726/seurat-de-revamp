@@ -6,14 +6,13 @@ title: Setup
 ## Data Sets
 
 
-/data/ifnb.RData
-
-
 :::: prereq
 
-Some knowledge of R and scRNA-seq analysis is assumed.
+Some knowledge of R and scRNA-seq analysis is assumed. We recommend reviewing the following materials before the starting the materials:
+- [Introduction to R](https://mbite.org/intro-to-r/)
+- [10X single-cell RNA-seq analysis in R](https://mbite.org/tutorials/singlecell/)
 
-This lesson assumes you have R and RStudio installed on your computer.
+This lesson assumes you have the latest versions of R and RStudio installed on your computer.
 
 
 ::::
@@ -25,8 +24,8 @@ This lesson assumes you have R and RStudio installed on your computer.
 
 If you don't have R and RStudio already installed, please download them here:
 
-[Download and install the latest version of R using the UniMelb mirror](https://cran.ms.unimelb.edu.au/).
-[Download and install RStudio](https://posit.co/download/rstudio-desktop/#download).
+- [Download and install the latest version of R using the UniMelb mirror](https://cran.ms.unimelb.edu.au/).
+- [Download and install RStudio](https://posit.co/download/rstudio-desktop/#download).
 
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -59,6 +58,7 @@ install.packages("tidyverse")
 install.packages("pheatmap")
 install.packages("metap")
 install.packages("ggplot2")
+
 
 ```
 

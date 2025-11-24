@@ -419,7 +419,12 @@ DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our 
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
-Cell Cycle Check 1 — BEFORE integration (after PCA / pre-Harmony/CCA) 
+
+**Cell Cycle Check 1 — BEFORE integration (after PCA / pre-Harmony / CCA)** 
+
+`Seurat` also features a function, `CellCyleScoring` to calculate which phase each individual cell is in the cell cycle using canonical markers. You can read more about it [here](https://satijalab.org/seurat/articles/cell_cycle_vignette.html).
+
+Which phase in the cell cycle are the clusters in primarily? Are they different or the same between clusters?
 
 :::::::::::::::::::::::: solution 
 
@@ -540,21 +545,21 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, redu
 ```
 
 ``` output
-03:51:50 UMAP embedding parameters a = 0.9922 b = 1.112
-03:51:50 Read 13548 rows and found 20 numeric columns
-03:51:50 Using Annoy for neighbor search, n_neighbors = 30
-03:51:50 Building Annoy index with metric = cosine, n_trees = 50
+05:45:38 UMAP embedding parameters a = 0.9922 b = 1.112
+05:45:38 Read 13548 rows and found 20 numeric columns
+05:45:38 Using Annoy for neighbor search, n_neighbors = 30
+05:45:38 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-03:51:51 Writing NN index file to temp file /tmp/Rtmp6Bks3v/file23e6228f1689
-03:51:52 Searching Annoy index using 1 thread, search_k = 3000
-03:51:56 Annoy recall = 100%
-03:51:57 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-03:51:59 Initializing from normalized Laplacian + noise (using RSpectra)
-03:51:59 Commencing optimization for 200 epochs, with 586822 positive edges
-03:51:59 Using rng type: pcg
-03:52:05 Optimization finished
+05:45:39 Writing NN index file to temp file /tmp/Rtmp2jcCIl/file23d574583d19
+05:45:39 Searching Annoy index using 1 thread, search_k = 3000
+05:45:43 Annoy recall = 100%
+05:45:44 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+05:45:46 Initializing from normalized Laplacian + noise (using RSpectra)
+05:45:46 Commencing optimization for 200 epochs, with 586822 positive edges
+05:45:46 Using rng type: pcg
+05:45:53 Optimization finished
 ```
 
 ``` r
@@ -572,9 +577,7 @@ before.integration | after.harmony
 :::: discussion
 
 Looking at the UMAPs above, do you think integration was
-successful? Have a slide on what if its just different cell types. !!!
-question Try looking at the PC1 and PC2 plots for harmony and seurat as
-well
+successful?
 
 ::::
 
@@ -655,7 +658,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 ```
 
 ``` r
@@ -663,16 +666,11 @@ ifnb.filtered <- JoinLayers(ifnb.filtered)
 ```
 
 
-::::::::::::::::::::::::::::::::::::: keypoints 
-
-- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
-- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
-- Harmony and CCA both align shared cell states but use different mathematical strategies.
-
-::::::::::::::::::::::::::::::::::::::::::::::::
+## Additional Challenges
 
 ::::::::::::::::::::::::::::::::::::: challenge 
-K-means clustering
+
+You can also use K-means clustering to cluster the data to compare to other clustering methods. How can you use the `kmeans()` function from `stats` to cluster the data and visualise it using `DimPlot()`?
 
 :::::::::::::::::::::::: solution 
 
@@ -704,7 +702,9 @@ Idents(ifnb.filtered) <- "kmeans_k5"
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
-Cell-Cycle Check 2 — AFTER integration (after umap.cca + clustering)
+Cell Cycle Check 2 — AFTER integration (after umap.cca + clustering)
+
+Now that we have integrated the data, do you think the results will be the same or different?
 
 :::::::::::::::::::::::: solution 
 
@@ -740,3 +740,10 @@ pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
 
 :::::::::::::::::::::::::::::::::::
 
+::::::::::::::::::::::::::::::::::::: keypoints 
+
+- QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
+- Integration corrects sample-to-sample variation so cells group by biology, not by batch.
+- Harmony and CCA both align shared cell states but use different mathematical strategies.
+
+::::::::::::::::::::::::::::::::::::::::::::::::
