@@ -35,7 +35,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 ## Step 1: We need to import sample information for each cell from the original paper
@@ -554,6 +554,68 @@ Do the same thing with significant DEGs from the sc approach. Do you see any dif
 
  Run the same code as above but with the `treatment.response.CD16` variable instead of `treatment.response.CD16.pseudo` variable.
 
+
+``` r
+CD16.sig.markers <- treatment.response.CD16 %>% 
+  dplyr::filter(p_val_adj < 0.05) %>%
+  dplyr::mutate(gene = rownames(.))
+
+ifnb.filtered$celltype.stim.donor_id <- paste0(ifnb.filtered$seurat_annotations, "-",
+                                               ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
+Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+
+all.sig.avg.Expression.mat <- AverageExpression(ifnb.filtered, 
+                         features = CD16.sig.markers$gene, 
+                         layer = 'scale.data')
+
+## As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk analysis.
+## This message is displayed once per session.
+
+# View(all.sig.avg.Expression.mat %>%
+#  as.data.frame())
+
+CD16.sig.avg.Expression.mat <- all.sig.avg.Expression.mat$RNA %>%
+  as.data.frame() %>%
+  dplyr::select(starts_with("CD16 Mono"))
+
+# View(CD16.sig.avg.Expression.mat)
+
+pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
+         cluster_rows = TRUE,
+         show_rownames = FALSE, 
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20)
+```
+
+<img src="fig/section3-rendered-unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
+
+``` r
+cluster_metadata <- data.frame(
+  row.names = colnames(CD16.sig.avg.Expression.mat)
+) %>% 
+  dplyr::mutate(
+    Cell_Type = "CD16 Mono",
+    Treatment_Group = ifelse(str_detect(row.names(.), "STIM|CTRL"), 
+                      str_extract(row.names(.), "STIM|CTRL")))
+
+sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
+         cluster_rows = TRUE,
+         show_rownames = FALSE,
+         annotation = cluster_metadata[, c("Treatment_Group", "Cell_Type")], 
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20,
+         annotation_names_col = FALSE)
+
+sig.DEG.heatmap
+```
+
+<img src="fig/section3-rendered-unnamed-chunk-20-2.png" style="display: block; margin: auto;" />
 :::::
 
 :::::

@@ -52,12 +52,13 @@ if (!require("BiocManager", quietly = TRUE)) {
 }
 BiocManager::install("DESeq2")
 BiocManager::install("multtest") # dependency commonly missing
-
+BiocManager::install(c("SingleR", "celldex"))
 install.packages("harmony") # dependency needed for harmony analysis
 
 install.packages("tidyverse")
 install.packages("pheatmap")
 install.packages("metap")
 install.packages("ggplot2")
+
 ```
 

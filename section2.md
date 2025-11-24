@@ -32,7 +32,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 
@@ -135,14 +135,14 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
 
 
 ``` r
-# I happen to know that the cells in cluster 3 are CD16 monocytes - lets rename this cluster
+# I happen to know that the cells in cluster 4 are CD16 monocytes - lets rename this cluster
 # Idents(ifnb.filtered) # Let's look at the identities of our cells at the moment
 ```
 
 
 
 ``` r
-ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename cells in cluster 3 with a new cell type label
+ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename cells in cluster 4 with a new cell type label
 # Idents(ifnb.filtered) # we can take a look at the cell identities again
 ```
 
@@ -182,6 +182,42 @@ detail in the Intro to scRNA-seq workshop material.
 
 ::::
 
+::::::::::::::::::::::::::::::::::::: challenge 
+Automated Cell Type Annotation
+
+:::::::::::::::::::::::: solution 
+
+
+``` r
+# Load reference data 
+# Blood & immune lineages
+ref.set <- celldex::BlueprintEncodeData()
+
+ifnb.v4 <- JoinLayers(ifnb.filtered)
+sce.ifnb.filtered <- as.SingleCellExperiment(ifnb.v4)
+sce.ifnb.filtered <- logNormCounts(sce.ifnb.filtered)
+
+pred.cnts <- SingleR(
+  test = sce.ifnb.filtered,
+  ref = ref.set,
+  labels = ref.set$label.main
+)
+
+lbls.keep <- table(pred.cnts$labels)>10
+# Add SingleR labels to Seurat metadata
+ifnb.filtered$SingleR.labels <- sce.ifnb.filtered$SingleR.labels
+ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$labels, 'Other')
+
+# Run UMAP (based on PCA)
+ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
+DimPlot(ifnb.filtered, reduction='umap.cca', group.by='SingleR.labels',  label = TRUE, label.size = 3 )
+```
+
+<img src="fig/section2-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
 
 ## Step 3: Find differentially expressed genes (DEGs) between our two conditions, using CD16 Mono cells as an example
 
@@ -196,7 +232,7 @@ Idents(ifnb.filtered) <- ifnb.filtered$celltype.and.stim
 DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) # each cluster is now made up of two labels (control or stimulated)
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="fig/section2-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 
 
@@ -206,9 +242,7 @@ DimPlot(ifnb.filtered, reduction = "umap.cca",
         label = T, split.by = "stim") # Lets separate by condition to see what we've done a bit more clearly
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
-
-
+<img src="fig/section2-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 We'll now leverage these new identities to compare DEGs between our
 treatment groups
@@ -239,7 +273,7 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
             split.by = 'stim', min.cutoff = 'q10')
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
+<img src="fig/section2-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 
 ## Step 5: Create a Heatmap to visualise DEGs between our two conditions + cell types
@@ -278,20 +312,11 @@ top5 <- ifnb.treatVsCtrl.markers %>%
 
 DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
           label = FALSE)
-```
 
-``` warning
-Warning in DoHeatmap(ifnb.filtered, features = top5$gene, label = FALSE): The
-following features were omitted as they were not found in the scale.data layer
-for the RNA assay: EIF1, BLNK, RPS15A, GIMAP5, LINC00926, RPL21, RPL13, RPL7,
-RPS3A, RPS6, RPL14, RPS16, RPL3, PABPC1, CPLX1
-```
-
-``` r
 DEG.heatmap
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="fig/section2-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
 
 
 
