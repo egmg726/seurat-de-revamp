@@ -9,9 +9,13 @@ exercises: 2
 [**Slides available here.**](files/Seurate-DE-slides-NEW.pdf)
 
 **Author:** Manveer Chauhan, Clark Lab, The University of Melbourne.\
-**Contributors:** Vini Salazar, Susan (Jiayi) Si, Raymond (Bibo) Zhao, Emma Gail, Melbourne Bioinformatics.
+**Contributors:** \
+- Vini Salazar, Melbourne Bioinformatics\
+- Susan (Jiayi) Si, The University of Melbourne\
+- Raymond (Bibo) Zhao, The University of Melbourne\
+- Emma Gail. Melbourne Bioinformatics\
 
-Last updated November 2025
+Last updated: November 2025
 
 ## Overview 
 

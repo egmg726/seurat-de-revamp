@@ -37,6 +37,7 @@ library(pheatmap)
 library(grid)
 library(metap)
 library(harmony)
+library(SingleR)
 
 set.seed(4242) # Set Seed for Reproducibility
 

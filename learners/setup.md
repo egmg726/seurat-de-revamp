@@ -3,12 +3,11 @@ title: Setup
 ---
 
 
-## Data Sets
-
 
 :::: prereq
 
 Some knowledge of R and scRNA-seq analysis is assumed. We recommend reviewing the following materials before the starting the materials:
+
 - [Introduction to R](https://mbite.org/intro-to-r/)
 - [10X single-cell RNA-seq analysis in R](https://mbite.org/tutorials/singlecell/)
 
