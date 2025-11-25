@@ -32,7 +32,7 @@ Number of edges: 521570
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 13
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 
