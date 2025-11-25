@@ -40,7 +40,6 @@ Elapsed time: 2 seconds
 
 ## Step 1: We need to import sample information for each cell from the original paper
 
-
 :::: discussion
 
 Have a look at the ifnb.filtered seurat metadata, can you
@@ -80,6 +79,7 @@ loadDonorMetadata <- function(seu.obj){
 }
 
 ifnb.filtered <- loadDonorMetadata(ifnb.filtered)
+#ifnb.filtered@meta.data
 ```
 
 ## Step 2: Aggregate our counts based on treatment group, cell-type, and donor id
@@ -116,7 +116,6 @@ We can view the top rows here:
 ``` r
 head(ifnb.pseudobulk.df)
 ```
-
 
 
 ## Step 3: Perform Differential Expression using DESeq2
@@ -298,8 +297,6 @@ Visualise_Overlapping_DEGs <- function(pseudobulk.de,
 
 Let's use the helper functions above to plot and view the
 overlap/agreement between our pseudobulk versus single-cell approaches
-
- 
         
 
 ``` r

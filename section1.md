@@ -50,6 +50,8 @@ library(metap)
 library(harmony)
 library(DropletUtils)
 library(ggplot2)
+library(SingleR)
+library(Celldex)
 
 set.seed(4242) # Set Seed for Reproducibility
 ```
@@ -545,21 +547,21 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, redu
 ```
 
 ``` output
-23:16:33 UMAP embedding parameters a = 0.9922 b = 1.112
-23:16:33 Read 13548 rows and found 20 numeric columns
-23:16:33 Using Annoy for neighbor search, n_neighbors = 30
-23:16:33 Building Annoy index with metric = cosine, n_trees = 50
+01:18:02 UMAP embedding parameters a = 0.9922 b = 1.112
+01:18:02 Read 13548 rows and found 20 numeric columns
+01:18:02 Using Annoy for neighbor search, n_neighbors = 30
+01:18:02 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-23:16:34 Writing NN index file to temp file /tmp/RtmpMByiGc/file23f2ee6750b
-23:16:34 Searching Annoy index using 1 thread, search_k = 3000
-23:16:38 Annoy recall = 100%
-23:16:39 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-23:16:42 Initializing from normalized Laplacian + noise (using RSpectra)
-23:16:42 Commencing optimization for 200 epochs, with 586822 positive edges
-23:16:42 Using rng type: pcg
-23:16:48 Optimization finished
+01:18:04 Writing NN index file to temp file /tmp/Rtmpn4hGbh/file23cc13883d04
+01:18:04 Searching Annoy index using 1 thread, search_k = 3000
+01:18:08 Annoy recall = 100%
+01:18:09 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:18:12 Initializing from normalized Laplacian + noise (using RSpectra)
+01:18:12 Commencing optimization for 200 epochs, with 586822 positive edges
+01:18:12 Using rng type: pcg
+01:18:18 Optimization finished
 ```
 
 ``` r
@@ -626,6 +628,57 @@ What do you think of the integration results now?
         
 **Hint:** Also look at the PC1 and PC2 plots for each integration method.
 
+::::::::::::::::::::::::::::::::::::: challenge 
+Cell Cycle Check 2 — AFTER integration (after umap.cca + clustering)
+
+Now that we have integrated the data, do you think the results will be the same or different?
+
+:::::::::::::::::::::::: solution 
+
+
+``` r
+# ---- Cell-cycle check (POST-integration) ----
+
+# Visual on integrated embedding
+DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+
+``` r
+# Phase composition by cluster and by condition
+tab_phase_cluster <- prop.table(table(ifnb.filtered$seurat_clusters, ifnb.filtered$Phase), 1) * 100
+```
+
+``` error
+Error in `x[[i, drop = TRUE]]` at SeuratObject/R/seurat.R:2939:3:
+! 'seurat_clusters' not found in this Seurat object
+ Did you mean "seurat_annotations"?
+```
+
+``` r
+tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filtered$Phase), 1) * 100
+pheatmap(tab_phase_cluster,
+         main = "Phase (%) by cluster",
+         display_numbers = TRUE,
+         number_format = "%.1f")
+```
+
+``` error
+Error: object 'tab_phase_cluster' not found
+```
+
+``` r
+pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
+```
+
+<img src="fig/section1-rendered-unnamed-chunk-19-2.png" style="display: block; margin: auto;" />
+
+:::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::
+
+
 
 ## Step 6: Perform standard clustering steps after integration
 
@@ -672,6 +725,8 @@ ifnb.filtered <- JoinLayers(ifnb.filtered)
 
 You can also use K-means clustering to cluster the data to compare to other clustering methods. How can you use the `kmeans()` function from `stats` to cluster the data and visualise it using `DimPlot()`?
 
+In this example, we used k = 5 purely for illustration. As you can see, it produces fewer clusters compared to the default Louvain algorithm. You are welcome to try different k values in your own time to explore whether k-means clustering is a suitable option in this context.
+
 :::::::::::::::::::::::: solution 
 
 
@@ -679,66 +734,27 @@ You can also use K-means clustering to cluster the data to compare to other clus
 # K-means
 emb <- Embeddings(ifnb.filtered, "pca")[, 1:20]
 set.seed(1)
-km <- kmeans(emb, centers = 5, nstart = 50)
+km <- kmeans(emb, centers = 12, nstart = 50)
 
-ifnb.filtered$kmeans_k5 <- factor(km$cluster)
+ifnb.filtered$kmeans_k12 <- factor(km$cluster)
 
 # Compare labelings
 p1 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "seurat_clusters") + ggtitle("Louvain")
-p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k5") + ggtitle("k-means (K=5)")
+p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k12") + ggtitle("k-means (K=12)")
 p1 | p2
-```
-
-<img src="fig/section1-rendered-unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
-
-``` r
-# If you decide to proceed with k-means downstream:
-Idents(ifnb.filtered) <- "kmeans_k5"
-```
-
-:::::::::::::::::::::::::::::::::
-
-:::::::::::::::::::::::::::::::::::
-
-
-::::::::::::::::::::::::::::::::::::: challenge 
-Cell Cycle Check 2 — AFTER integration (after umap.cca + clustering)
-
-Now that we have integrated the data, do you think the results will be the same or different?
-
-:::::::::::::::::::::::: solution 
-
-
-``` r
-# ---- Cell-cycle check (POST-integration) ----
-
-# Visual on integrated embedding
-DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
 ```
 
 <img src="fig/section1-rendered-unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
 
 ``` r
-# Phase composition by cluster and by condition
-tab_phase_cluster <- prop.table(table(ifnb.filtered$seurat_clusters, ifnb.filtered$Phase), 1) * 100
-tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filtered$Phase), 1) * 100
-pheatmap(tab_phase_cluster,
-         main = "Phase (%) by cluster",
-         display_numbers = TRUE,
-         number_format = "%.1f")
+# If you decide to proceed with k-means downstream:
+Idents(ifnb.filtered) <- "kmeans_k12"
 ```
-
-<img src="fig/section1-rendered-unnamed-chunk-21-2.png" style="display: block; margin: auto;" />
-
-``` r
-pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
-```
-
-<img src="fig/section1-rendered-unnamed-chunk-21-3.png" style="display: block; margin: auto;" />
 
 :::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::
+
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 

@@ -318,8 +318,6 @@ DEG.heatmap
 
 <img src="fig/section2-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
 
-
-
 ::::::::::::::::::::::::::::::::::::: keypoints 
 - QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
 - Integration corrects sample-to-sample variation so cells group by biology, not by batch.
