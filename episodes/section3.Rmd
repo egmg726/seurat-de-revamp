@@ -26,7 +26,10 @@ exercises: 2
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
-
+# Fix Github limit
+library(future)
+future::plan("sequential")
+options(future.globals.maxSize = 5 * 1024^3)  
 
 library(Seurat)
 #library(SeuratData)
@@ -78,7 +81,6 @@ treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM'
 
 ## Step 1: We need to import sample information for each cell from the original paper
 
-
 :::: discussion
 
 Have a look at the ifnb.filtered seurat metadata, can you
@@ -117,6 +119,7 @@ loadDonorMetadata <- function(seu.obj){
 }
 
 ifnb.filtered <- loadDonorMetadata(ifnb.filtered)
+#ifnb.filtered@meta.data
 ```
 
 ## Step 2: Aggregate our counts based on treatment group, cell-type, and donor id
@@ -139,17 +142,15 @@ ifnb.pseudobulk.df <- AggregateExpression(ifnb.filtered, assays = "RNA",
                                           group.by = c("stim", "donor_id", "seurat_annotations")) %>% 
   as.data.frame()
 
-
 ```
 
 We can view the top rows here:
 
-```{r,eval=FALSE}
+```{r, eval=FALSE}
 
 head(ifnb.pseudobulk.df)
 
 ```
-
 
 
 ## Step 3: Perform Differential Expression using DESeq2
@@ -279,8 +280,6 @@ Visualise_Overlapping_DEGs <- function(pseudobulk.de,
 
 Let's use the helper functions above to plot and view the
 overlap/agreement between our pseudobulk versus single-cell approaches
-
- 
         
 ``` {r}
 merged_deg_data <- Merge_DEG_dataframes(pseudobulk.de = treatment.response.CD16.pseudo,

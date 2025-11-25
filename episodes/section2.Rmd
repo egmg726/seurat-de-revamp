@@ -272,8 +272,6 @@ DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
 DEG.heatmap
 ```
 
-
-
 ::::::::::::::::::::::::::::::::::::: keypoints 
 - QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).
 - Integration corrects sample-to-sample variation so cells group by biology, not by batch.
