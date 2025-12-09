@@ -23,16 +23,8 @@ exercises: 2
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 
-``` output
-Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-
-Number of nodes: 13548
-Number of edges: 521570
-
-Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9002
-Number of communities: 13
-Elapsed time: 2 seconds
+``` error
+Error in library(DESeq2): there is no package called 'DESeq2'
 ```
 
 
@@ -41,7 +33,9 @@ Elapsed time: 2 seconds
 DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 
@@ -49,7 +43,9 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 ## Step 1. Find Conserved Markers to label our celltypes
@@ -61,52 +57,22 @@ markers.cluster.4 <- FindConservedMarkers(ifnb.filtered, ident.1 = 4,
                      grouping.var = 'stim')
 ```
 
-``` output
-Testing group CTRL: (4) vs (0, 11, 2, 7, 1, 5, 10, 9, 3, 6, 8, 12)
-```
-
-``` output
-For a (much!) faster implementation of the Wilcoxon Rank Sum Test,
-(default method for FindMarkers) please install the presto package
---------------------------------------------
-install.packages('devtools')
-devtools::install_github('immunogenomics/presto')
---------------------------------------------
-After installation of presto, Seurat will automatically use the more 
-efficient implementation (no further action necessary).
-This message will be shown once per session
-```
-
-``` output
-Testing group STIM: (4) vs (5, 11, 1, 3, 0, 7, 9, 2, 6, 8, 10, 12)
+``` error
+Error: Please install the metap package to use FindConservedMarkers.
+This can be accomplished with the following commands: 
+----------------------------------------
+install.packages('BiocManager')
+BiocManager::install('multtest')
+install.packages('metap')
+----------------------------------------
 ```
 
 ``` r
 head(markers.cluster.4)
 ```
 
-``` output
-          CTRL_p_val CTRL_avg_log2FC CTRL_pct.1 CTRL_pct.2 CTRL_p_val_adj
-VMO1    0.000000e+00        6.020340      0.843      0.060   0.000000e+00
-FCGR3A  0.000000e+00        4.127801      0.980      0.204   0.000000e+00
-MS4A7   0.000000e+00        3.734967      0.957      0.196   0.000000e+00
-MS4A4A  0.000000e+00        5.200846      0.587      0.025   0.000000e+00
-CXCL16 1.976263e-323        2.928346      0.949      0.234  2.777242e-319
-LST1   8.070733e-289        2.861452      0.929      0.251  1.134180e-284
-       STIM_p_val STIM_avg_log2FC STIM_pct.1 STIM_pct.2 STIM_p_val_adj
-VMO1            0        7.585467      0.721      0.022              0
-FCGR3A          0        5.121272      0.989      0.128              0
-MS4A7           0        3.916774      0.992      0.219              0
-MS4A4A          0        4.824831      0.901      0.073              0
-CXCL16          0        3.854043      0.924      0.148              0
-LST1            0        3.059542      0.887      0.193              0
-            max_pval minimump_p_val
-VMO1    0.000000e+00              0
-FCGR3A  0.000000e+00              0
-MS4A7   0.000000e+00              0
-MS4A4A  0.000000e+00              0
-CXCL16 1.976263e-323              0
-LST1   8.070733e-289              0
+``` error
+Error: object 'markers.cluster.4' not found
 ```
 
 Let's visualise the top upregulated, conserved between condition,
@@ -129,7 +95,9 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
             features = c('VMO1', 'FCGR3A', 'MS4A7', 'CXCL16'), min.cutoff = 'q10')
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 
@@ -143,6 +111,13 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
 
 ``` r
 ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename cells in cluster 4 with a new cell type label
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 # Idents(ifnb.filtered) # we can take a look at the cell identities again
 ```
 
@@ -153,7 +128,9 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
   ggtitle("After changing the identity of cluster 4")
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 ## Step 2: Set the identity of our clusters to the annotations provided
@@ -161,6 +138,13 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
 
 ``` r
 Idents(ifnb.filtered) <- ifnb.filtered@meta.data$seurat_annotations
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 # Idents(ifnb.filtered)
 ```
 
@@ -170,7 +154,9 @@ Idents(ifnb.filtered) <- ifnb.filtered@meta.data$seurat_annotations
 DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 :::: callout
@@ -192,28 +178,89 @@ Automated Cell Type Annotation
 # Load reference data 
 # Blood & immune lineages
 ref.set <- celldex::BlueprintEncodeData()
+```
 
+``` error
+Error in loadNamespace(x): there is no package called 'celldex'
+```
+
+``` r
 ifnb.v4 <- JoinLayers(ifnb.filtered)
-sce.ifnb.filtered <- as.SingleCellExperiment(ifnb.v4)
-sce.ifnb.filtered <- logNormCounts(sce.ifnb.filtered)
+```
 
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
+sce.ifnb.filtered <- as.SingleCellExperiment(ifnb.v4)
+```
+
+``` error
+Error: object 'ifnb.v4' not found
+```
+
+``` r
+sce.ifnb.filtered <- logNormCounts(sce.ifnb.filtered)
+```
+
+``` error
+Error in logNormCounts(sce.ifnb.filtered): could not find function "logNormCounts"
+```
+
+``` r
 pred.cnts <- SingleR(
   test = sce.ifnb.filtered,
   ref = ref.set,
   labels = ref.set$label.main
 )
+```
 
+``` error
+Error in SingleR(test = sce.ifnb.filtered, ref = ref.set, labels = ref.set$label.main): could not find function "SingleR"
+```
+
+``` r
 lbls.keep <- table(pred.cnts$labels)>10
+```
+
+``` error
+Error: object 'pred.cnts' not found
+```
+
+``` r
 # Add SingleR labels to Seurat metadata
 ifnb.filtered$SingleR.labels <- sce.ifnb.filtered$SingleR.labels
-ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$labels, 'Other')
+```
 
+``` error
+Error: object 'sce.ifnb.filtered' not found
+```
+
+``` r
+ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$labels, 'Other')
+```
+
+``` error
+Error: object 'lbls.keep' not found
+```
+
+``` r
 # Run UMAP (based on PCA)
 ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 DimPlot(ifnb.filtered, reduction='umap.cca', group.by='SingleR.labels',  label = TRUE, label.size = 3 )
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 :::::::::::::::::::::::::::::::::
 
@@ -225,14 +272,29 @@ DimPlot(ifnb.filtered, reduction='umap.cca', group.by='SingleR.labels',  label =
 ``` r
 # Make another column in metadata showing what cells belong to each treatment group (This will make more sense in a bit)
 ifnb.filtered$celltype.and.stim <- paste0(ifnb.filtered$seurat_annotations, '_', ifnb.filtered$stim)
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 # (ifnb.filtered@meta.data)
 
 Idents(ifnb.filtered) <- ifnb.filtered$celltype.and.stim
+```
 
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) # each cluster is now made up of two labels (control or stimulated)
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 
@@ -242,7 +304,9 @@ DimPlot(ifnb.filtered, reduction = "umap.cca",
         label = T, split.by = "stim") # Lets separate by condition to see what we've done a bit more clearly
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 We'll now leverage these new identities to compare DEGs between our
 treatment groups
@@ -251,17 +315,18 @@ treatment groups
 ``` r
 treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM', 
                                        ident.2 = 'CD16 Mono_CTRL')
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 head(treatment.response.CD16) # These are the genes that are upregulated in the stimulated versus control group
 ```
 
-``` output
-               p_val avg_log2FC pct.1 pct.2     p_val_adj
-IFIT1  1.379187e-176   5.834216 1.000 0.094 1.938172e-172
-ISG15  6.273887e-166   5.333771 1.000 0.478 8.816694e-162
-IFIT3  1.413978e-164   4.412990 0.992 0.314 1.987063e-160
-ISG20  6.983755e-164   4.088510 1.000 0.448 9.814270e-160
-IFITM3 1.056793e-161   3.191513 1.000 0.634 1.485111e-157
-IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154
+``` error
+Error: object 'treatment.response.CD16' not found
 ```
 
 ## Step 4: Lets plot conserved features vs DEGs between conditions
@@ -273,7 +338,9 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
             split.by = 'stim', min.cutoff = 'q10')
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'ifnb.filtered' not found
+```
 
 
 ## Step 5: Create a Heatmap to visualise DEGs between our two conditions + cell types
@@ -283,6 +350,10 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
 # Find upregulated genes in each group (cell type and condition)
 ifnb.treatVsCtrl.markers <- FindAllMarkers(ifnb.filtered,
                                           only.pos = TRUE)
+```
+
+``` error
+Error: object 'ifnb.filtered' not found
 ```
 
 
@@ -312,11 +383,19 @@ top5 <- ifnb.treatVsCtrl.markers %>%
 
 DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
           label = FALSE)
+```
 
+``` error
+Error: object 'ifnb.filtered' not found
+```
+
+``` r
 DEG.heatmap
 ```
 
-<img src="fig/section2-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'DEG.heatmap' not found
+```
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 - QC filtering removes low-quality cells (e.g., low gene count or high mitochondrial %).

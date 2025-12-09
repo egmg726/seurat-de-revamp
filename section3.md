@@ -26,6 +26,18 @@ exercises: 2
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
 
+``` error
+Error in library(DESeq2): there is no package called 'DESeq2'
+```
+
+``` error
+Error in library(metap): there is no package called 'metap'
+```
+
+``` error
+Error in library(SingleR): there is no package called 'SingleR'
+```
+
 ``` output
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
@@ -150,34 +162,16 @@ treatment.response.CD16.pseudo <- FindMarkers(object = ifnb.pseudobulk,
                                       test.use = "DESeq2")
 ```
 
-``` output
-converting counts to integer mode
-```
-
-``` output
-gene-wise dispersion estimates
-```
-
-``` output
-mean-dispersion relationship
-```
-
-``` output
-final dispersion estimates
+``` error
+Error in DESeq2DETest(data.use = data.use, cells.1 = cells.1, cells.2 = cells.2, : Please install DESeq2 - learn more at https://bioconductor.org/packages/release/bioc/html/DESeq2.html
 ```
 
 ``` r
 head(treatment.response.CD16.pseudo)
 ```
 
-``` output
-               p_val avg_log2FC pct.1 pct.2     p_val_adj
-IFIT3  1.564083e-134   4.601427     1     1 2.198006e-130
-IFIT2   2.122691e-84   4.613021     1     1  2.983017e-80
-ISG20   1.401656e-81   4.038272     1     1  1.969747e-77
-DDX58   1.366535e-73   3.448721     1     1  1.920392e-69
-NT5C3A  5.127048e-66   3.942571     1     1  7.205040e-62
-OASL    1.186412e-63   4.025025     1     1  1.667265e-59
+``` error
+Error: object 'treatment.response.CD16.pseudo' not found
 ```
 
 ``` r
@@ -223,14 +217,8 @@ IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154
 head(treatment.response.CD16.pseudo)
 ```
 
-``` output
-               p_val avg_log2FC pct.1 pct.2     p_val_adj
-IFIT3  1.564083e-134   4.601427     1     1 2.198006e-130
-IFIT2   2.122691e-84   4.613021     1     1  2.983017e-80
-ISG20   1.401656e-81   4.038272     1     1  1.969747e-77
-DDX58   1.366535e-73   3.448721     1     1  1.920392e-69
-NT5C3A  5.127048e-66   3.942571     1     1  7.205040e-62
-OASL    1.186412e-63   4.025025     1     1  1.667265e-59
+``` error
+Error: object 'treatment.response.CD16.pseudo' not found
 ```
 
 Next let's take a look at the degree of overlap between the actual DEGs
@@ -302,6 +290,13 @@ overlap/agreement between our pseudobulk versus single-cell approaches
 ``` r
 merged_deg_data <- Merge_DEG_dataframes(pseudobulk.de = treatment.response.CD16.pseudo,
                                         singlecell.de = treatment.response.CD16)
+```
+
+``` error
+Error: object 'treatment.response.CD16.pseudo' not found
+```
+
+``` r
 merged_deg_data %>% 
   dplyr::select(gene, 
                 p_val.sc, p_val.bulk,
@@ -309,29 +304,27 @@ merged_deg_data %>%
   head(10)
 ```
 
-``` output
-       gene      p_val.sc    p_val.bulk  p_val_adj.sc p_val_adj.bulk
-2866  IFIT3 1.413978e-164 1.564083e-134 1.987063e-160  2.198006e-130
-2865  IFIT2 7.334976e-159  2.122691e-84 1.030784e-154   2.983017e-80
-2992  ISG20 6.983755e-164  1.401656e-81 9.814270e-160   1.969747e-77
-1626  DDX58 2.340153e-109  1.366535e-73 3.288617e-105   1.920392e-69
-4129 NT5C3A 5.806396e-117  5.127048e-66 8.159728e-113   7.205040e-62
-4185   OASL 5.497910e-147  1.186412e-63 7.726213e-143   1.667265e-59
-4544 PLSCR1 6.905174e-116  3.783863e-61 9.703841e-112   5.317463e-57
-3859 MYL12A  2.476988e-83  7.623767e-61  3.480912e-79   1.071368e-56
-2859  IFI35  4.701828e-99  2.527378e-58  6.607479e-95   3.551724e-54
-2661  HERC5  1.578848e-92  1.829060e-56  2.218755e-88   2.570378e-52
+``` error
+Error: object 'merged_deg_data' not found
 ```
 
 ``` r
 # How many DEGs overlap between our two methods? Is there anything in the merged_deg_data frame that stands out to you?
 overlap.bar.plt <- Visualise_Overlapping_DEGs(pseudobulk.de = treatment.response.CD16.pseudo,
                                               singlecell.de = treatment.response.CD16)
+```
 
+``` error
+Error: object 'treatment.response.CD16.pseudo' not found
+```
+
+``` r
 overlap.bar.plt
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'overlap.bar.plt' not found
+```
 
 :::: discussion
         
@@ -350,10 +343,28 @@ Let's create lists of genes in each of our categories first
 ``` r
 common <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk < 0.05 & 
                                        merged_deg_data$p_val.sc < 0.05)]
+```
+
+``` error
+Error: object 'merged_deg_data' not found
+```
+
+``` r
 only_sc <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk > 0.05 & 
                                         merged_deg_data$p_val.sc < 0.05)]
+```
+
+``` error
+Error: object 'merged_deg_data' not found
+```
+
+``` r
 only_pseudobulk <- merged_deg_data$gene[which(merged_deg_data$p_val.bulk < 0.05 & 
                                           merged_deg_data$p_val.sc > 0.05)]
+```
+
+``` error
+Error: object 'merged_deg_data' not found
 ```
 
 Now I want to look at the expression of genes that only appear in our sc
@@ -434,6 +445,10 @@ CD16.sig.markers <- treatment.response.CD16.pseudo %>%
   dplyr::mutate(gene = rownames(.))
 ```
 
+``` error
+Error: object 'treatment.response.CD16.pseudo' not found
+```
+
 This is how we can pull our average (scaled) pseudobulk expression
 values from our seurat obj:
 
@@ -453,6 +468,10 @@ As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk a
 This message is displayed once per session.
 ```
 
+``` error
+Error: object 'CD16.sig.markers' not found
+```
+
 ``` r
 ## As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk analysis.
 ## This message is displayed once per session.
@@ -468,7 +487,13 @@ Now lets make sure we're only using data from the CD16 cell type
 CD16.sig.avg.Expression.mat <- all.sig.avg.Expression.mat$RNA %>%
   as.data.frame() %>%
   dplyr::select(starts_with("CD16 Mono"))
+```
 
+``` error
+Error: object 'all.sig.avg.Expression.mat' not found
+```
+
+``` r
 # View(CD16.sig.avg.Expression.mat)
 ```
 
@@ -487,7 +512,9 @@ pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          height = 20)
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'CD16.sig.avg.Expression.mat' not found
+```
 
 
 
@@ -503,7 +530,13 @@ cluster_metadata <- data.frame(
     Cell_Type = "CD16 Mono",
     Treatment_Group = ifelse(str_detect(row.names(.), "STIM|CTRL"), 
                       str_extract(row.names(.), "STIM|CTRL")))
+```
 
+``` error
+Error: object 'CD16.sig.avg.Expression.mat' not found
+```
+
+``` r
 sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          cluster_rows = TRUE,
          show_rownames = FALSE,
@@ -514,11 +547,19 @@ sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          fontsize_row = 10, 
          height = 20,
          annotation_names_col = FALSE)
+```
 
+``` error
+Error: object 'CD16.sig.avg.Expression.mat' not found
+```
+
+``` r
 sig.DEG.heatmap
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+``` error
+Error: object 'sig.DEG.heatmap' not found
+```
 
 
 
