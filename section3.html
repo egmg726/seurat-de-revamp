@@ -319,7 +319,7 @@ between cell-types in two different experimental groups</a></li>
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Section 3 : Differential Expression using a pseudobulk approach and DESeq2</h1>
-        <p>Last updated on 2025-12-16 |
+        <p>Last updated on 2025-12-23 |
 
         <a href="https://github.com/melbournebioinformatics/workbench-template-rmd/edit/main/episodes/section3.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -369,17 +369,20 @@ shifts) and report limitations.</li>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error in library(DESeq2): there is no package called 'DESeq2'</code></pre>
+<pre class="error" tabindex="0"><code>Error in `library()`:
+! there is no package called 'DESeq2'</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error in library(metap): there is no package called 'metap'</code></pre>
+<pre class="error" tabindex="0"><code>Error in `library()`:
+! there is no package called 'metap'</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error in library(SingleR): there is no package called 'SingleR'</code></pre>
+<pre class="error" tabindex="0"><code>Error in `library()`:
+! there is no package called 'SingleR'</code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -516,7 +519,8 @@ start.</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error in DESeq2DETest(data.use = data.use, cells.1 = cells.1, cells.2 = cells.2, : Please install DESeq2 - learn more at https://bioconductor.org/packages/release/bioc/html/DESeq2.html</code></pre>
+<pre class="error" tabindex="0"><code>Error in `DESeq2DETest()`:
+! Please install DESeq2 - learn more at https://bioconductor.org/packages/release/bioc/html/DESeq2.html</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -527,7 +531,8 @@ start.</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'treatment.response.CD16.pseudo' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'treatment.response.CD16.pseudo' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb14">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -585,7 +590,8 @@ IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'treatment.response.CD16.pseudo' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'treatment.response.CD16.pseudo' not found</code></pre>
 </div>
 <p>Next let’s take a look at the degree of overlap between the actual
 DEGs in both approaches.</p>
@@ -661,7 +667,8 @@ approaches</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'treatment.response.CD16.pseudo' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'treatment.response.CD16.pseudo' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -676,7 +683,8 @@ approaches</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'merged_deg_data' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'merged_deg_data' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb25">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -689,7 +697,8 @@ approaches</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'treatment.response.CD16.pseudo' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'treatment.response.CD16.pseudo' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb27">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -700,7 +709,8 @@ approaches</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'overlap.bar.plt' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'overlap.bar.plt' not found</code></pre>
 </div>
 <div id="discussion3" class="callout discussion">
 <div class="callout-square">
@@ -727,7 +737,8 @@ single-cell DE closer<a class="anchor" aria-label="anchor" href="#step-5-investi
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'merged_deg_data' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'merged_deg_data' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb31">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -739,7 +750,8 @@ single-cell DE closer<a class="anchor" aria-label="anchor" href="#step-5-investi
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'merged_deg_data' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'merged_deg_data' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb33">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -751,7 +763,8 @@ single-cell DE closer<a class="anchor" aria-label="anchor" href="#step-5-investi
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'merged_deg_data' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'merged_deg_data' not found</code></pre>
 </div>
 <p>Now I want to look at the expression of genes that only appear in our
 sc deg test and not in our pseudobulk deg test I’ve picked two genes
@@ -769,7 +782,7 @@ from the ‘only_sc’ variable we just defined</p>
 <span>        idents <span class="op">=</span> <span class="fu">c</span><span class="op">(</span><span class="st">"CD16 Mono_CTRL"</span>, <span class="st">"CD16 Mono_STIM"</span><span class="op">)</span>, </span>
 <span>        group.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> </span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-10-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb36">
+<figure><img src="fig/section3-rendered-unnamed-chunk-10-1.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb36">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -777,7 +790,7 @@ from the ‘only_sc’ variable we just defined</p>
 <span>        idents <span class="op">=</span> <span class="fu">c</span><span class="op">(</span><span class="st">"CD16 Mono_CTRL"</span>, <span class="st">"CD16 Mono_STIM"</span><span class="op">)</span>, </span>
 <span>        group.by <span class="op">=</span> <span class="st">"donor_id.and.stim"</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-11-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div id="discussion4" class="callout discussion">
+<figure><img src="fig/section3-rendered-unnamed-chunk-11-1.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div id="discussion4" class="callout discussion">
 <div class="callout-square">
 <i class="callout-icon" data-feather="message-circle"></i>
 </div>
@@ -799,7 +812,7 @@ and pseudobulk deg tests</p>
 <span>        idents <span class="op">=</span> <span class="fu">c</span><span class="op">(</span><span class="st">"CD16 Mono_CTRL"</span>, <span class="st">"CD16 Mono_STIM"</span><span class="op">)</span>, </span>
 <span>        group.by <span class="op">=</span> <span class="st">"stim"</span><span class="op">)</span> </span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb38">
+<figure><img src="fig/section3-rendered-unnamed-chunk-12-1.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb38">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -807,7 +820,7 @@ and pseudobulk deg tests</p>
 <span>        idents <span class="op">=</span> <span class="fu">c</span><span class="op">(</span><span class="st">"CD16 Mono_CTRL"</span>, <span class="st">"CD16 Mono_STIM"</span><span class="op">)</span>, </span>
 <span>        group.by <span class="op">=</span> <span class="st">"donor_id.and.stim"</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></section><section><h2 class="section-heading" id="step-6-creating-our-own-custom-visualisations-for-deg-analysis-between-cell-types-in-two-different-experimental-groups">Step 6: Creating our own custom visualisations for DEG analysis
+<figure><img src="fig/section3-rendered-unnamed-chunk-13-1.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></section><section><h2 class="section-heading" id="step-6-creating-our-own-custom-visualisations-for-deg-analysis-between-cell-types-in-two-different-experimental-groups">Step 6: Creating our own custom visualisations for DEG analysis
 between cell-types in two different experimental groups<a class="anchor" aria-label="anchor" href="#step-6-creating-our-own-custom-visualisations-for-deg-analysis-between-cell-types-in-two-different-experimental-groups"></a></h2>
 <hr class="half-width"><p>So far, we’ve been using functions wrapped within Seurat to plot and
 visualise our data. But we’re not limited to those functions. Let’s use
@@ -826,7 +839,8 @@ approach</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'treatment.response.CD16.pseudo' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'treatment.response.CD16.pseudo' not found</code></pre>
 </div>
 <p>This is how we can pull our average (scaled) pseudobulk expression
 values from our seurat obj:</p>
@@ -851,7 +865,8 @@ This message is displayed once per session.</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'CD16.sig.markers' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'CD16.sig.markers' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb44">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -875,7 +890,8 @@ This message is displayed once per session.</code></pre>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'all.sig.avg.Expression.mat' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'all.sig.avg.Expression.mat' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb47">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -901,7 +917,8 @@ expression values for our signficant DEGs</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'CD16.sig.avg.Expression.mat' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'CD16.sig.avg.Expression.mat' not found</code></pre>
 </div>
 <p>The cool thing about pheatmap is that we can customise our heatmap
 with added metadata</p>
@@ -920,7 +937,8 @@ with added metadata</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'CD16.sig.avg.Expression.mat' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'CD16.sig.avg.Expression.mat' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb52">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -940,7 +958,8 @@ with added metadata</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'CD16.sig.avg.Expression.mat' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'CD16.sig.avg.Expression.mat' not found</code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb54">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -951,7 +970,8 @@ with added metadata</p>
 <div class="codewrapper">
 <h3 class="code-label">ERROR<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="error" tabindex="0"><code>Error: object 'sig.DEG.heatmap' not found</code></pre>
+<pre class="error" tabindex="0"><code>Error:
+! object 'sig.DEG.heatmap' not found</code></pre>
 </div>
 <p>Lets save our heatmap using the grid library (very useful package!)
 Code from: <a href="https://stackoverflow.com/questions/43051525/how-to-draw-pheatmap-plot-to-screen-and-also-save-to-file" class="external-link uri">https://stackoverflow.com/questions/43051525/how-to-draw-pheatmap-plot-to-screen-and-also-save-to-file</a></p>
@@ -1030,7 +1050,7 @@ see any differences?</p>
 <span>         fontsize_row <span class="op">=</span> <span class="fl">10</span>, </span>
 <span>         height <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-20-1.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb58">
+<figure><img src="fig/section3-rendered-unnamed-chunk-20-1.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb58">
 <h3 class="code-label">R<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="downlit sourceCode r">
@@ -1055,7 +1075,7 @@ see any differences?</p>
 <span></span>
 <span><span class="va">sig.DEG.heatmap</span></span></code></pre>
 </div>
-<figure><img src="fig/section3-rendered-unnamed-chunk-20-2.png" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></div>
+<figure><img src="fig/section3-rendered-unnamed-chunk-20-2.png" alt="" style="display: block; margin: auto;" class="figure mx-auto d-block"></figure></div>
 </div>
 </div>
 </div>
@@ -1153,8 +1173,8 @@ any links that you are not going to use.
   "url": "melbournebioinformatics.github.io/uom-varnish/section3.html",
   "identifier": "melbournebioinformatics.github.io/uom-varnish/section3.html",
   "dateCreated": "2025-11-01",
-  "dateModified": "2025-12-16",
-  "datePublished": "2025-12-16"
+  "dateModified": "2025-12-23",
+  "datePublished": "2025-12-23"
 }
 
   </script><script>
