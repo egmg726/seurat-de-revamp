@@ -59,23 +59,28 @@ set.seed(4242) # Set Seed for Reproducibility
 
 
 ``` error
-Error in library(DESeq2): there is no package called 'DESeq2'
+Error in `library()`:
+! there is no package called 'DESeq2'
 ```
 
 ``` error
-Error in library(metap): there is no package called 'metap'
+Error in `library()`:
+! there is no package called 'metap'
 ```
 
 ``` error
-Error in library(DropletUtils): there is no package called 'DropletUtils'
+Error in `library()`:
+! there is no package called 'DropletUtils'
 ```
 
 ``` error
-Error in library(SingleR): there is no package called 'SingleR'
+Error in `library()`:
+! there is no package called 'SingleR'
 ```
 
 ``` error
-Error in library(celldex): there is no package called 'celldex'
+Error in `library()`:
+! there is no package called 'celldex'
 ```
 
 We're using the ifnb public dataset provided by Seurat. This dataset
@@ -192,7 +197,7 @@ association.plt.raw <- FeatureScatter(ifnb, feature1 = "nCount_RNA", feature2 = 
 qc.metric.plts
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-5-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 association.plt.raw
@@ -202,7 +207,7 @@ association.plt.raw
 `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-5-2.png" alt="" style="display: block; margin: auto;" />
 
 :::::::: discussion
 
@@ -230,13 +235,13 @@ association.plt.filtered <- FeatureScatter(ifnb.filtered, feature1 = "nCount_RNA
 qc.metric.plts.filtered
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-6-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 association.plt.filtered
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-6-2.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-6-2.png" alt="" style="display: block; margin: auto;" />
 
 Let's check how many cells we've filtered out (looks like \~400 cells
 were removed):
@@ -283,7 +288,7 @@ wrap_plots(list(qc.metric.plts, qc.metric.plts.filtered),
            ncol = 1)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-7-1.png" alt="" style="display: block; margin: auto;" />
 
 
 
@@ -293,7 +298,7 @@ association.plts <- standardise_plt_scale(association.plt.raw,
 association.plts
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-8-1.png" alt="" style="display: block; margin: auto;" />
 
 
 Let's check how many cells we've filtered out (looks like \~400 cells
@@ -423,11 +428,11 @@ Negative:  VMO1, FCGR3A, MS4A4A, CXCL16, MS4A7, PPM1N, HN1, LST1, SMPDL3A, ATP1B
 ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 15 PCs is adequate to capture the majority of the variation in the data, but we'll air on the higher side and consider all 20 dimensions.
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-12-1.png" alt="" style="display: block; margin: auto;" />
 
 
 
-<img src="fig/section1-rendered-unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-13-1.png" alt="" style="display: block; margin: auto;" />
 
 
 
@@ -436,7 +441,7 @@ ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 
 DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-14-1.png" alt="" style="display: block; margin: auto;" />
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
@@ -472,7 +477,7 @@ if (!"umap" %in% Reductions(ifnb.filtered)) {
 DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-15-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
@@ -566,21 +571,21 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, redu
 ```
 
 ``` output
-01:18:58 UMAP embedding parameters a = 0.9922 b = 1.112
-01:18:58 Read 13548 rows and found 20 numeric columns
-01:18:58 Using Annoy for neighbor search, n_neighbors = 30
-01:18:58 Building Annoy index with metric = cosine, n_trees = 50
+01:18:16 UMAP embedding parameters a = 0.9922 b = 1.112
+01:18:16 Read 13548 rows and found 20 numeric columns
+01:18:16 Using Annoy for neighbor search, n_neighbors = 30
+01:18:16 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-01:19:00 Writing NN index file to temp file /tmp/Rtmp42c4lw/file1e832dcda5df
-01:19:00 Searching Annoy index using 1 thread, search_k = 3000
-01:19:04 Annoy recall = 100%
-01:19:05 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:19:06 Initializing from normalized Laplacian + noise (using RSpectra)
-01:19:06 Commencing optimization for 200 epochs, with 586822 positive edges
-01:19:06 Using rng type: pcg
-01:19:11 Optimization finished
+01:18:17 Writing NN index file to temp file /tmp/Rtmp162GIn/file1eff6cc091a7
+01:18:17 Searching Annoy index using 1 thread, search_k = 3000
+01:18:21 Annoy recall = 100%
+01:18:22 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+01:18:23 Initializing from normalized Laplacian + noise (using RSpectra)
+01:18:23 Commencing optimization for 200 epochs, with 586822 positive edges
+01:18:23 Using rng type: pcg
+01:18:28 Optimization finished
 ```
 
 ``` r
@@ -592,7 +597,7 @@ before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "sti
 before.integration | after.harmony
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-16-1.png" alt="" style="display: block; margin: auto;" />
 
 
 :::: discussion
@@ -621,7 +626,7 @@ after.seuratCCA <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "st
 before.integration | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-17-1.png" alt="" style="display: block; margin: auto;" />
 
 
 
@@ -630,7 +635,7 @@ before.integration | after.seuratCCA
 after.harmony | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-18-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 ## Show example slide of integration 'failing' but due to different cell types in each sample ***
@@ -662,7 +667,7 @@ Now that we have integrated the data, do you think the results will be the same 
 DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-19-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 # Phase composition by cluster and by condition
@@ -684,14 +689,15 @@ pheatmap(tab_phase_cluster,
 ```
 
 ``` error
-Error: object 'tab_phase_cluster' not found
+Error:
+! object 'tab_phase_cluster' not found
 ```
 
 ``` r
 pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-19-2.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-19-2.png" alt="" style="display: block; margin: auto;" />
 
 :::::::::::::::::::::::::::::::::
 
@@ -763,7 +769,7 @@ p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k12") + 
 p1 | p2
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
+<img src="fig/section1-rendered-unnamed-chunk-21-1.png" alt="" style="display: block; margin: auto;" />
 
 ``` r
 # If you decide to proceed with k-means downstream:

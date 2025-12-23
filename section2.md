@@ -24,7 +24,8 @@ exercises: 2
 
 
 ``` error
-Error in library(DESeq2): there is no package called 'DESeq2'
+Error in `library()`:
+! there is no package called 'DESeq2'
 ```
 
 
@@ -34,7 +35,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -44,7 +46,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -58,7 +61,8 @@ markers.cluster.4 <- FindConservedMarkers(ifnb.filtered, ident.1 = 4,
 ```
 
 ``` error
-Error: Please install the metap package to use FindConservedMarkers.
+Error:
+! Please install the metap package to use FindConservedMarkers.
 This can be accomplished with the following commands: 
 ----------------------------------------
 install.packages('BiocManager')
@@ -72,7 +76,8 @@ head(markers.cluster.4)
 ```
 
 ``` error
-Error: object 'markers.cluster.4' not found
+Error:
+! object 'markers.cluster.4' not found
 ```
 
 Let's visualise the top upregulated, conserved between condition,
@@ -96,7 +101,8 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -114,7 +120,8 @@ ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename c
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -129,7 +136,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -141,7 +149,8 @@ Idents(ifnb.filtered) <- ifnb.filtered@meta.data$seurat_annotations
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -155,7 +164,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -181,7 +191,8 @@ ref.set <- celldex::BlueprintEncodeData()
 ```
 
 ``` error
-Error in loadNamespace(x): there is no package called 'celldex'
+Error in `loadNamespace()`:
+! there is no package called 'celldex'
 ```
 
 ``` r
@@ -189,7 +200,8 @@ ifnb.v4 <- JoinLayers(ifnb.filtered)
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -197,7 +209,8 @@ sce.ifnb.filtered <- as.SingleCellExperiment(ifnb.v4)
 ```
 
 ``` error
-Error: object 'ifnb.v4' not found
+Error:
+! object 'ifnb.v4' not found
 ```
 
 ``` r
@@ -205,7 +218,8 @@ sce.ifnb.filtered <- logNormCounts(sce.ifnb.filtered)
 ```
 
 ``` error
-Error in logNormCounts(sce.ifnb.filtered): could not find function "logNormCounts"
+Error in `logNormCounts()`:
+! could not find function "logNormCounts"
 ```
 
 ``` r
@@ -217,7 +231,8 @@ pred.cnts <- SingleR(
 ```
 
 ``` error
-Error in SingleR(test = sce.ifnb.filtered, ref = ref.set, labels = ref.set$label.main): could not find function "SingleR"
+Error in `SingleR()`:
+! could not find function "SingleR"
 ```
 
 ``` r
@@ -225,7 +240,8 @@ lbls.keep <- table(pred.cnts$labels)>10
 ```
 
 ``` error
-Error: object 'pred.cnts' not found
+Error:
+! object 'pred.cnts' not found
 ```
 
 ``` r
@@ -234,7 +250,8 @@ ifnb.filtered$SingleR.labels <- sce.ifnb.filtered$SingleR.labels
 ```
 
 ``` error
-Error: object 'sce.ifnb.filtered' not found
+Error:
+! object 'sce.ifnb.filtered' not found
 ```
 
 ``` r
@@ -242,7 +259,8 @@ ifnb.filtered$SingleR.labels <- ifelse(lbls.keep[pred.cnts$labels], pred.cnts$la
 ```
 
 ``` error
-Error: object 'lbls.keep' not found
+Error:
+! object 'lbls.keep' not found
 ```
 
 ``` r
@@ -251,7 +269,8 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -259,7 +278,8 @@ DimPlot(ifnb.filtered, reduction='umap.cca', group.by='SingleR.labels',  label =
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 :::::::::::::::::::::::::::::::::
@@ -275,7 +295,8 @@ ifnb.filtered$celltype.and.stim <- paste0(ifnb.filtered$seurat_annotations, '_',
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -285,7 +306,8 @@ Idents(ifnb.filtered) <- ifnb.filtered$celltype.and.stim
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -293,7 +315,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) # each cluster is now 
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -305,7 +328,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca",
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 We'll now leverage these new identities to compare DEGs between our
@@ -318,7 +342,8 @@ treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM'
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -326,7 +351,8 @@ head(treatment.response.CD16) # These are the genes that are upregulated in the 
 ```
 
 ``` error
-Error: object 'treatment.response.CD16' not found
+Error:
+! object 'treatment.response.CD16' not found
 ```
 
 ## Step 4: Lets plot conserved features vs DEGs between conditions
@@ -339,7 +365,8 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -353,7 +380,8 @@ ifnb.treatVsCtrl.markers <- FindAllMarkers(ifnb.filtered,
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -386,7 +414,8 @@ DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
 ```
 
 ``` error
-Error: object 'ifnb.filtered' not found
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -394,7 +423,8 @@ DEG.heatmap
 ```
 
 ``` error
-Error: object 'DEG.heatmap' not found
+Error:
+! object 'DEG.heatmap' not found
 ```
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
