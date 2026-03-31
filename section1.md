@@ -60,7 +60,37 @@ set.seed(4242) # Set Seed for Reproducibility
 
 ``` error
 Error in `library()`:
+! there is no package called 'future'
+```
+
+``` error
+Error in `loadNamespace()`:
+! there is no package called 'future'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'Seurat'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'tidyverse'
+```
+
+``` error
+Error in `library()`:
 ! there is no package called 'DESeq2'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'patchwork'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'pheatmap'
 ```
 
 ``` error
@@ -70,7 +100,17 @@ Error in `library()`:
 
 ``` error
 Error in `library()`:
+! there is no package called 'harmony'
+```
+
+``` error
+Error in `library()`:
 ! there is no package called 'DropletUtils'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'ggplot2'
 ```
 
 ``` error
@@ -158,7 +198,14 @@ In droplet-based protocols (e.g., 10x Genomics), millions of droplets are formed
 ``` r
 # Step 2a: QC and filtering
 ifnb$percent.mt <- PercentageFeatureSet(object = ifnb, pattern = "^MT-") # First let's annotate the mitochondrial percentage for each cell
+```
 
+``` error
+Error in `PercentageFeatureSet()`:
+! could not find function "PercentageFeatureSet"
+```
+
+``` r
 head((ifnb@meta.data)) # we can take a look mitochondrial percentages for the seurat object by viewing the seurat objects metadata
 ```
 
@@ -170,13 +217,6 @@ AAACATACCTCGCT.1 IMMUNE_CTRL       3420          850 CTRL          CD14 Mono
 AAACATACCTGGTA.1 IMMUNE_CTRL       3156         1109 CTRL                pDC
 AAACATACGATGAA.1 IMMUNE_CTRL       1868          634 CTRL       CD4 Memory T
 AAACATACGGCATT.1 IMMUNE_CTRL       1581          557 CTRL          CD14 Mono
-                 percent.mt
-AAACATACATTTCC.1          0
-AAACATACCAGAAA.1          0
-AAACATACCTCGCT.1          0
-AAACATACCTGGTA.1          0
-AAACATACGATGAA.1          0
-AAACATACGGCATT.1          0
 ```
 
 ``` r
@@ -185,29 +225,38 @@ qc.metric.plts <- VlnPlot(ifnb, features = c("nFeature_RNA", "nCount_RNA", "perc
   ggtitle("Before Filtering")
 ```
 
-``` warning
-Warning in SingleExIPlot(type = type, data = data[, x, drop = FALSE], idents =
-idents, : All cells have the same value of percent.mt.
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
 ```
 
 ``` r
 association.plt.raw <- FeatureScatter(ifnb, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") + geom_smooth(method = "lm") +
   ggtitle("Before Filtering")
+```
 
+``` error
+Error in `FeatureScatter()`:
+! could not find function "FeatureScatter"
+```
+
+``` r
 qc.metric.plts
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-5-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'qc.metric.plts' not found
+```
 
 ``` r
 association.plt.raw
 ```
 
-``` output
-`geom_smooth()` using formula = 'y ~ x'
+``` error
+Error:
+! object 'association.plt.raw' not found
 ```
-
-<img src="fig/section1-rendered-unnamed-chunk-5-2.png" alt="" style="display: block; margin: auto;" />
 
 :::::::: discussion
 
@@ -226,22 +275,50 @@ ifnb.filtered <- subset(ifnb, subset = nCount_RNA > 800 &
                           nFeature_RNA > 200 &
                           nFeature_RNA < 1200 &
                           percent.mt < 5)
+```
 
+``` error
+Error in `.requirePackage()`:
+! unable to load required package 'SeuratObject'
+```
+
+``` r
 qc.metric.plts.filtered <- VlnPlot(ifnb.filtered, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) +
   ggtitle("After Filtering")
+```
+
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
+```
+
+``` r
 association.plt.filtered <- FeatureScatter(ifnb.filtered, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") + geom_smooth(method = "lm") +
   ggtitle("After Filtering")
+```
 
+``` error
+Error in `FeatureScatter()`:
+! could not find function "FeatureScatter"
+```
+
+``` r
 qc.metric.plts.filtered
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-6-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'qc.metric.plts.filtered' not found
+```
 
 ``` r
 association.plt.filtered
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-6-2.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'association.plt.filtered' not found
+```
 
 Let's check how many cells we've filtered out (looks like \~400 cells
 were removed):
@@ -288,17 +365,31 @@ wrap_plots(list(qc.metric.plts, qc.metric.plts.filtered),
            ncol = 1)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-7-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `wrap_plots()`:
+! could not find function "wrap_plots"
+```
 
 
 
 ``` r
 association.plts <- standardise_plt_scale(association.plt.raw,
                                           association.plt.filtered)
+```
+
+``` error
+Error in `layer_data()`:
+! could not find function "layer_data"
+```
+
+``` r
 association.plts
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-8-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'association.plts' not found
+```
 
 
 Let's check how many cells we've filtered out (looks like \~400 cells
@@ -310,10 +401,12 @@ ifnb
 ```
 
 ``` output
-An object of class Seurat 
-14053 features across 13999 samples within 1 assay 
-Active assay: RNA (14053 features, 0 variable features)
- 2 layers present: counts, data
+Loading required namespace: SeuratObject
+```
+
+``` error
+Error in `.requirePackage()`:
+! unable to load required package 'SeuratObject'
 ```
 
 
@@ -322,11 +415,9 @@ Active assay: RNA (14053 features, 0 variable features)
 ifnb.filtered
 ```
 
-``` output
-An object of class Seurat 
-14053 features across 13548 samples within 1 assay 
-Active assay: RNA (14053 features, 0 variable features)
- 2 layers present: counts, data
+``` error
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 Next we need to split our count matrices based on conditions. This step
@@ -337,6 +428,11 @@ this is important for downstream integration steps in Seurat v5.
 
 ``` r
 ifnb.filtered[["RNA"]] <- split(ifnb.filtered[["RNA"]], f = ifnb.filtered$stim) # Lets split our count matrices based on conditions (stored within different layers) -> needed for integration steps in Seurat v5
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -352,32 +448,27 @@ correction (integration)
 ifnb.filtered <- NormalizeData(ifnb.filtered)
 ```
 
-``` output
-Normalizing layer: counts.CTRL
-```
-
-``` output
-Normalizing layer: counts.STIM
+``` error
+Error in `NormalizeData()`:
+! could not find function "NormalizeData"
 ```
 
 ``` r
 ifnb.filtered <- FindVariableFeatures(ifnb.filtered)
 ```
 
-``` output
-Finding variable features for layer counts.CTRL
-```
-
-``` output
-Finding variable features for layer counts.STIM
+``` error
+Error in `FindVariableFeatures()`:
+! could not find function "FindVariableFeatures"
 ```
 
 ``` r
 ifnb.filtered <- ScaleData(ifnb.filtered)
 ```
 
-``` output
-Centering and scaling data matrix
+``` error
+Error in `ScaleData()`:
+! could not find function "ScaleData"
 ```
 
 ``` r
@@ -386,53 +477,32 @@ Centering and scaling data matrix
 ifnb.filtered <- RunPCA(ifnb.filtered)
 ```
 
-``` output
-PC_ 1 
-Positive:  TYROBP, C15orf48, FCER1G, CST3, SOD2, ANXA5, FTL, TYMP, TIMP1, CD63 
-	   LGALS1, CTSB, S100A4, KYNU, LGALS3, FCN1, PSAP, NPC2, ANXA2, IGSF6 
-	   S100A11, LYZ, SPI1, APOBEC3A, CD68, CTSL, NINJ1, HLA-DRA, CCL2, SDCBP 
-Negative:  NPM1, CCR7, CXCR4, GIMAP7, LTB, CD3D, CD7, SELL, TMSB4X, CD2 
-	   TRAT1, IL7R, PTPRCAP, IL32, ITM2A, RGCC, LEF1, CD3G, ALOX5AP, CREM 
-	   PASK, MYC, SNHG8, TSC22D3, BIRC3, GPR171, NOP58, CD27, RARRES3, CD8B 
-PC_ 2 
-Positive:  ISG15, ISG20, IFIT3, IFIT1, LY6E, TNFSF10, IFIT2, MX1, IFI6, RSAD2 
-	   CXCL10, OAS1, CXCL11, IFITM3, MT2A, OASL, TNFSF13B, IDO1, IL1RN, APOBEC3A 
-	   CCL8, GBP1, HERC5, FAM26F, GBP4, RABGAP1L, HES4, WARS, VAMP5, DEFB1 
-Negative:  IL8, CLEC5A, CD14, VCAN, S100A8, IER3, MARCKSL1, IL1B, PID1, CD9 
-	   GPX1, INSIG1, PHLDA1, PLAUR, PPIF, THBS1, OSM, SLC7A11, CTB-61M7.2, GAPDH 
-	   LIMS1, S100A9, GAPT, ACTB, CXCL3, C19orf59, MGST1, OLR1, CEBPB, FTH1 
-PC_ 3 
-Positive:  HLA-DQA1, CD83, HLA-DQB1, CD74, HLA-DRA, HLA-DPA1, HLA-DRB1, CD79A, HLA-DPB1, IRF8 
-	   MS4A1, SYNGR2, MIR155HG, HERPUD1, REL, HSP90AB1, ID3, HLA-DMA, TVP23A, FABP5 
-	   NME1, HSPE1, PMAIP1, BANK1, CD70, HSPD1, TSPAN13, EBI3, TCF4, CCR7 
-Negative:  ANXA1, GNLY, NKG7, GIMAP7, TMSB4X, PRF1, CD7, CCL5, RARRES3, CD3D 
-	   CD2, KLRD1, GZMH, GZMA, CTSW, GZMB, FGFBP2, CLIC3, IL32, MT2A 
-	   FASLG, KLRC1, CST7, RGCC, CD8A, GCHFR, OASL, GZMM, CXCR3, KLRB1 
-PC_ 4 
-Positive:  LTB, SELL, CCR7, LEF1, IL7R, CD3D, TRAT1, GIMAP7, ADTRP, PASK 
-	   CD3G, TSHZ2, CMTM8, SOCS3, TSC22D3, NPM1, CCL2, MYC, CCL7, CCL8 
-	   CTSL, SNHG8, TXNIP, CD27, S100A9, CA6, C12orf57, TMEM204, HPSE, GPR171 
-Negative:  NKG7, GZMB, GNLY, CST7, PRF1, CCL5, CLIC3, KLRD1, APOBEC3G, GZMH 
-	   GZMA, CTSW, FGFBP2, KLRC1, FASLG, C1orf21, HOPX, SH2D1B, TNFRSF18, CXCR3 
-	   LINC00996, SPON2, RAMP1, ID2, GCHFR, IGFBP7, HLA-DPA1, CD74, XCL2, HLA-DPB1 
-PC_ 5 
-Positive:  CCL2, CCL7, CCL8, PLA2G7, TXN, LMNA, SDS, S100A9, CSTB, ATP6V1F 
-	   CAPG, CCR1, EMP1, FABP5, CCR5, IDO1, TPM4, LILRB4, MGST1, CTSB 
-	   HPSE, CCNA1, GCLM, PDE4DIP, HSPA1A, CD63, SLC7A11, HSPA5, VIM, HSP90B1 
-Negative:  VMO1, FCGR3A, MS4A4A, CXCL16, MS4A7, PPM1N, HN1, LST1, SMPDL3A, ATP1B3 
-	   CASP5, CDKN1C, AIF1, CH25H, PLAC8, SERPINA1, TMSB4X, LRRC25, CD86, GBP5 
-	   HCAR3, RP11-290F20.3, COTL1, RGS19, VNN2, PILRA, STXBP2, LILRA5, C3AR1, FCGR3B 
+``` error
+Error in `RunPCA()`:
+! could not find function "RunPCA"
 ```
 
 ``` r
 ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 15 PCs is adequate to capture the majority of the variation in the data, but we'll air on the higher side and consider all 20 dimensions.
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-12-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `ElbowPlot()`:
+! could not find function "ElbowPlot"
+```
 
 
 
-<img src="fig/section1-rendered-unnamed-chunk-13-1.png" alt="" style="display: block; margin: auto;" />
+
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
+```
+
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
 
 
 
@@ -441,7 +511,10 @@ ElbowPlot(ifnb.filtered) # Visualise the dimensionality of the data, looks like 
 DimPlot(ifnb.filtered, reduction = 'pca', group.by = 'stim') # lets see how our cells separate by condition and whether integration is necessary
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-14-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
 
 
 ::::::::::::::::::::::::::::::::::::: challenge 
@@ -458,7 +531,14 @@ Which phase in the cell cycle are the clusters in primarily? Are they different 
 ``` r
 # ---- Cell-cycle check (PRE-integration) ----
 if (!exists("cc.genes.updated.2019")) data("cc.genes.updated.2019", package = "Seurat")
+```
 
+``` error
+Error in `find.package()`:
+! there is no package called 'Seurat'
+```
+
+``` r
 # Score S/G2M
 ifnb.filtered <- CellCycleScoring(
   ifnb.filtered,
@@ -467,47 +547,69 @@ ifnb.filtered <- CellCycleScoring(
   set.ident    = FALSE,
   search       = TRUE
 )
+```
 
+``` error
+Error in `CellCycleScoring()`:
+! could not find function "CellCycleScoring"
+```
+
+``` r
 # Quick UMAP on PCA (if you haven't already run it)
 if (!"umap" %in% Reductions(ifnb.filtered)) {
   ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20, reduction = "pca")
 }
+```
 
+``` error
+Error in `Reductions()`:
+! could not find function "Reductions"
+```
+
+``` r
 # Visual + quick quant
 DimPlot(ifnb.filtered, reduction = "umap", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-15-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
 
 ``` r
 emb_pca <- Embeddings(ifnb.filtered, "pca")[,1:20]
+```
+
+``` error
+Error in `Embeddings()`:
+! could not find function "Embeddings"
+```
+
+``` r
 pc_cor_S   <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$S.Score))
+```
+
+``` error
+Error in `FUN()`:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 pc_cor_G2M <- sapply(1:20, \(i) cor(emb_pca[,i], ifnb.filtered$G2M.Score))
+```
+
+``` error
+Error in `FUN()`:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 print(cbind(PC=1:20, r_S=round(pc_cor_S,3), r_G2M=round(pc_cor_G2M,3)))
 ```
 
-``` output
-      PC    r_S  r_G2M
- [1,]  1 -0.262 -0.245
- [2,]  2  0.065  0.048
- [3,]  3  0.023  0.038
- [4,]  4  0.002 -0.020
- [5,]  5 -0.003  0.015
- [6,]  6 -0.003  0.090
- [7,]  7 -0.045 -0.038
- [8,]  8  0.007 -0.010
- [9,]  9 -0.014  0.012
-[10,] 10 -0.021 -0.061
-[11,] 11 -0.006  0.064
-[12,] 12 -0.008  0.008
-[13,] 13  0.031  0.042
-[14,] 14  0.008 -0.027
-[15,] 15  0.011  0.015
-[16,] 16 -0.014 -0.007
-[17,] 17 -0.010  0.011
-[18,] 18  0.009  0.006
-[19,] 19  0.003  0.027
-[20,] 20 -0.015  0.026
+``` error
+Error:
+! object 'pc_cor_S' not found
 ```
 
 :::::::::::::::::::::::::::::::::
@@ -547,57 +649,48 @@ ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
                                  new.reduction = "harmony")
 ```
 
-``` output
-The `features` argument is ignored by `HarmonyIntegration`.
-Transposing data matrix
-
-Using automatic lambda estimation
-
-Initializing state using k-means centroids initialization
-
-Harmony 1/10
-
-Harmony 2/10
-
-Harmony 3/10
-
-Harmony converged after 3 iterations
-
-This message is displayed once per session.
+``` error
+Error in `IntegrateLayers()`:
+! could not find function "IntegrateLayers"
 ```
 
 ``` r
 ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "harmony", dims = 1:20, reduction.name = "umap.harmony")
 ```
 
-``` output
-01:47:24 UMAP embedding parameters a = 0.9922 b = 1.112
-01:47:24 Read 13548 rows and found 20 numeric columns
-01:47:24 Using Annoy for neighbor search, n_neighbors = 30
-01:47:24 Building Annoy index with metric = cosine, n_trees = 50
-0%   10   20   30   40   50   60   70   80   90   100%
-[----|----|----|----|----|----|----|----|----|----|
-**************************************************|
-01:47:25 Writing NN index file to temp file /tmp/RtmpqMd7Wl/file572d1eeed711
-01:47:25 Searching Annoy index using 1 thread, search_k = 3000
-01:47:30 Annoy recall = 100%
-01:47:30 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-01:47:31 Initializing from normalized Laplacian + noise (using RSpectra)
-01:47:32 Commencing optimization for 200 epochs, with 586822 positive edges
-01:47:32 Using rng type: pcg
-01:47:37 Optimization finished
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
 ```
 
 ``` r
 after.harmony <- DimPlot(ifnb.filtered, reduction = "umap.harmony", group.by = "stim") + 
   ggtitle("After Harmony Integration")
+```
+
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
+
+``` r
 before.integration <- DimPlot(ifnb.filtered, reduction = "umap", group.by = "stim") +
   ggtitle("Before Integration")
+```
 
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
+
+``` r
 before.integration | after.harmony
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-16-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'before.integration' not found
+```
 
 
 :::: discussion
@@ -617,16 +710,40 @@ ifnb.filtered <- IntegrateLayers(object = ifnb.filtered,
                                  method = CCAIntegration,
                                  orig.reduction = "pca", 
                                  new.reduction = "integrated.cca")
+```
 
+``` error
+Error in `IntegrateLayers()`:
+! could not find function "IntegrateLayers"
+```
+
+``` r
 ifnb.filtered <- RunUMAP(ifnb.filtered, reduction = "integrated.cca", dims = 1:20, reduction.name = "umap.cca")
+```
 
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
+```
+
+``` r
 after.seuratCCA <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim") +
   ggtitle("After Seurat CCA Integration")
+```
 
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
+
+``` r
 before.integration | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-17-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'before.integration' not found
+```
 
 
 
@@ -635,7 +752,10 @@ before.integration | after.seuratCCA
 after.harmony | after.seuratCCA
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-18-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'after.harmony' not found
+```
 
 ``` r
 ## Show example slide of integration 'failing' but due to different cell types in each sample ***
@@ -667,7 +787,10 @@ Now that we have integrated the data, do you think the results will be the same 
 DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "Phase", pt.size = 0.3)
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-19-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
 
 ``` r
 # Phase composition by cluster and by condition
@@ -675,13 +798,20 @@ tab_phase_cluster <- prop.table(table(ifnb.filtered$seurat_clusters, ifnb.filter
 ```
 
 ``` error
-Error in `x[[i, drop = TRUE]]` at SeuratObject/R/seurat.R:2959:3:
-! 'seurat_clusters' not found in this Seurat object
- Did you mean "seurat_annotations"?
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
 tab_phase_cond    <- prop.table(table(ifnb.filtered$stim,            ifnb.filtered$Phase), 1) * 100
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 pheatmap(tab_phase_cluster,
          main = "Phase (%) by cluster",
          display_numbers = TRUE,
@@ -689,15 +819,18 @@ pheatmap(tab_phase_cluster,
 ```
 
 ``` error
-Error:
-! object 'tab_phase_cluster' not found
+Error in `pheatmap()`:
+! could not find function "pheatmap"
 ```
 
 ``` r
 pheatmap(tab_phase_cond,    main = "Phase (%) by condition (stim)")
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-19-2.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `pheatmap()`:
+! could not find function "pheatmap"
+```
 
 :::::::::::::::::::::::::::::::::
 
@@ -715,32 +848,27 @@ and needs to be done before differential expression analysis
 ifnb.filtered <- FindNeighbors(ifnb.filtered, reduction = "integrated.cca", dims = 1:20)
 ```
 
-``` output
-Computing nearest neighbor graph
-```
-
-``` output
-Computing SNN
+``` error
+Error in `FindNeighbors()`:
+! could not find function "FindNeighbors"
 ```
 
 ``` r
 ifnb.filtered <- FindClusters(ifnb.filtered, resolution = 0.5)
 ```
 
-``` output
-Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-
-Number of nodes: 13548
-Number of edges: 521570
-
-Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9002
-Number of communities: 13
-Elapsed time: 2 seconds
+``` error
+Error in `FindClusters()`:
+! could not find function "FindClusters"
 ```
 
 ``` r
 ifnb.filtered <- JoinLayers(ifnb.filtered)
+```
+
+``` error
+Error in `JoinLayers()`:
+! could not find function "JoinLayers"
 ```
 
 
@@ -758,22 +886,68 @@ In this example, we used k = 5 purely for illustration. As you can see, it produ
 ``` r
 # K-means
 emb <- Embeddings(ifnb.filtered, "pca")[, 1:20]
+```
+
+``` error
+Error in `Embeddings()`:
+! could not find function "Embeddings"
+```
+
+``` r
 set.seed(1)
 km <- kmeans(emb, centers = 12, nstart = 50)
+```
 
+``` error
+Error:
+! object 'emb' not found
+```
+
+``` r
 ifnb.filtered$kmeans_k12 <- factor(km$cluster)
+```
 
+``` error
+Error:
+! object 'km' not found
+```
+
+``` r
 # Compare labelings
 p1 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "seurat_clusters") + ggtitle("Louvain")
+```
+
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
+
+``` r
 p2 <- DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "kmeans_k12") + ggtitle("k-means (K=12)")
+```
+
+``` error
+Error in `DimPlot()`:
+! could not find function "DimPlot"
+```
+
+``` r
 p1 | p2
 ```
 
-<img src="fig/section1-rendered-unnamed-chunk-21-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'p1' not found
+```
 
 ``` r
 # If you decide to proceed with k-means downstream:
 Idents(ifnb.filtered) <- "kmeans_k12"
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 :::::::::::::::::::::::::::::::::

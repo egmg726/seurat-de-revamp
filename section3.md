@@ -28,7 +28,37 @@ exercises: 2
 
 ``` error
 Error in `library()`:
+! there is no package called 'future'
+```
+
+``` error
+Error in `loadNamespace()`:
+! there is no package called 'future'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'Seurat'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'tidyverse'
+```
+
+``` error
+Error in `library()`:
 ! there is no package called 'DESeq2'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'patchwork'
+```
+
+``` error
+Error in `library()`:
+! there is no package called 'pheatmap'
 ```
 
 ``` error
@@ -38,19 +68,112 @@ Error in `library()`:
 
 ``` error
 Error in `library()`:
+! there is no package called 'harmony'
+```
+
+``` error
+Error in `library()`:
 ! there is no package called 'SingleR'
 ```
 
-``` output
-Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+``` error
+Error in `PercentageFeatureSet()`:
+! could not find function "PercentageFeatureSet"
+```
 
-Number of nodes: 13548
-Number of edges: 521570
+``` error
+Error in `.requirePackage()`:
+! unable to load required package 'SeuratObject'
+```
 
-Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9002
-Number of communities: 13
-Elapsed time: 2 seconds
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` error
+Error in `NormalizeData()`:
+! could not find function "NormalizeData"
+```
+
+``` error
+Error in `FindVariableFeatures()`:
+! could not find function "FindVariableFeatures"
+```
+
+``` error
+Error in `ScaleData()`:
+! could not find function "ScaleData"
+```
+
+``` error
+Error in `RunPCA()`:
+! could not find function "RunPCA"
+```
+
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
+```
+
+``` error
+Error in `IntegrateLayers()`:
+! could not find function "IntegrateLayers"
+```
+
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
+```
+
+``` error
+Error in `IntegrateLayers()`:
+! could not find function "IntegrateLayers"
+```
+
+``` error
+Error in `RunUMAP()`:
+! could not find function "RunUMAP"
+```
+
+``` error
+Error in `FindNeighbors()`:
+! could not find function "FindNeighbors"
+```
+
+``` error
+Error in `FindClusters()`:
+! could not find function "FindClusters"
+```
+
+``` error
+Error in `JoinLayers()`:
+! could not find function "JoinLayers"
+```
+
+``` error
+Error in `RenameIdents()`:
+! could not find function "RenameIdents"
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` error
+Error in `FindMarkers()`:
+! could not find function "FindMarkers"
 ```
 
 ## Step 1: We need to import sample information for each cell from the original paper
@@ -94,6 +217,14 @@ loadDonorMetadata <- function(seu.obj){
 }
 
 ifnb.filtered <- loadDonorMetadata(ifnb.filtered)
+```
+
+``` error
+Error in `AddMetaData()`:
+! could not find function "AddMetaData"
+```
+
+``` r
 #ifnb.filtered@meta.data
 ```
 
@@ -113,8 +244,9 @@ ifnb.pseudobulk <- AggregateExpression(ifnb.filtered, assays = "RNA",
                                    return.seurat = TRUE)
 ```
 
-``` output
-Centering and scaling data matrix
+``` error
+Error in `AggregateExpression()`:
+! could not find function "AggregateExpression"
 ```
 
 ``` r
@@ -123,6 +255,12 @@ Centering and scaling data matrix
 ifnb.pseudobulk.df <- AggregateExpression(ifnb.filtered, assays = "RNA",
                                           group.by = c("stim", "donor_id", "seurat_annotations")) %>% 
   as.data.frame()
+```
+
+``` error
+Error in `AggregateExpression(ifnb.filtered, assays = "RNA", group.by = c("stim",
+    "donor_id", "seurat_annotations")) %>% as.data.frame()`:
+! could not find function "%>%"
 ```
 
 We can view the top rows here:
@@ -155,9 +293,23 @@ start.
 
 ``` r
 ifnb.pseudobulk$celltype.and.stim <- paste(ifnb.pseudobulk$seurat_annotations, ifnb.pseudobulk$stim, sep = "_")
+```
+
+``` error
+Error:
+! object 'ifnb.pseudobulk' not found
+```
+
+``` r
 Idents(ifnb.pseudobulk) <- "celltype.and.stim"
+```
 
+``` error
+Error:
+! object 'ifnb.pseudobulk' not found
+```
 
+``` r
 # Lets run a DEG test between treated and control CD 16 monocytes using the same FindMarkers function but with DESeq2
 treatment.response.CD16.pseudo <- FindMarkers(object = ifnb.pseudobulk, 
                                       ident.1 = 'CD16 Mono_STIM', 
@@ -166,8 +318,8 @@ treatment.response.CD16.pseudo <- FindMarkers(object = ifnb.pseudobulk,
 ```
 
 ``` error
-Error in `DESeq2DETest()`:
-! Please install DESeq2 - learn more at https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+Error in `FindMarkers()`:
+! could not find function "FindMarkers"
 ```
 
 ``` r
@@ -184,10 +336,9 @@ Error:
 head(Cells(ifnb.pseudobulk)) # our 'cells' are no longer barcodes, but have been renamed according to stim-donor-annotation when we aggregated our data earlier
 ```
 
-``` output
-[1] "CTRL_SNG-101_CD14 Mono"    "CTRL_SNG-101_CD4 Naive T" 
-[3] "CTRL_SNG-101_CD4 Memory T" "CTRL_SNG-101_CD16 Mono"   
-[5] "CTRL_SNG-101_B"            "CTRL_SNG-101_CD8 T"       
+``` error
+Error in `Cells()`:
+! could not find function "Cells"
 ```
 
 ## Step 4: Assessing differences between our pseudbulk DEGs and single-cell DEGs
@@ -208,14 +359,9 @@ Hint: Look at the p_val and p_val_adj columns.
 head(treatment.response.CD16)
 ```
 
-``` output
-               p_val avg_log2FC pct.1 pct.2     p_val_adj
-IFIT1  1.379187e-176   5.834216 1.000 0.094 1.938172e-172
-ISG15  6.273887e-166   5.333771 1.000 0.478 8.816694e-162
-IFIT3  1.413978e-164   4.412990 0.992 0.314 1.987063e-160
-ISG20  6.983755e-164   4.088510 1.000 0.448 9.814270e-160
-IFITM3 1.056793e-161   3.191513 1.000 0.634 1.485111e-157
-IFIT2  7.334976e-159   4.622453 0.974 0.162 1.030784e-154
+``` error
+Error:
+! object 'treatment.response.CD16' not found
 ```
 
 ``` r
@@ -312,8 +458,9 @@ merged_deg_data %>%
 ```
 
 ``` error
-Error:
-! object 'merged_deg_data' not found
+Error in `merged_deg_data %>% dplyr::select(gene, p_val.sc, p_val.bulk, p_val_adj.sc,
+    p_val_adj.bulk) %>% head(10)`:
+! could not find function "%>%"
 ```
 
 ``` r
@@ -388,15 +535,33 @@ the 'only_sc' variable we just defined
 ``` r
 # create a new column to annotate sample-condition-celltype in the single-cell dataset
 ifnb.filtered$donor_id.and.stim <- paste0(ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
-Idents(ifnb.filtered) <- "celltype.and.stim"
+```
 
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
+Idents(ifnb.filtered) <- "celltype.and.stim"
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 # Explore some genes that only appear in the sc deg test---
 VlnPlot(ifnb.filtered, features = c("PABPC1", "SRGN"), 
         idents = c("CD16 Mono_CTRL", "CD16 Mono_STIM"), 
         group.by = "stim") 
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-10-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
+```
 
 
 
@@ -407,7 +572,10 @@ VlnPlot(ifnb.filtered, features = c("PABPC1", "SRGN"),
         group.by = "donor_id.and.stim", ncol = 1)
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-11-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
+```
 
 
 :::: discussion
@@ -427,7 +595,10 @@ VlnPlot(ifnb.filtered, features = c("IFIT2", "PSMA4"),
         group.by = "stim") 
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-12-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
+```
 
 
 
@@ -438,7 +609,10 @@ VlnPlot(ifnb.filtered, features = c("IFIT2", "PSMA4"),
         group.by = "donor_id.and.stim", ncol = 1) 
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-13-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `VlnPlot()`:
+! could not find function "VlnPlot"
+```
 
 
 ## Step 6: Creating our own custom visualisations for DEG analysis between cell-types in two different experimental groups
@@ -459,8 +633,9 @@ CD16.sig.markers <- treatment.response.CD16.pseudo %>%
 ```
 
 ``` error
-Error:
-! object 'treatment.response.CD16.pseudo' not found
+Error in `treatment.response.CD16.pseudo %>% dplyr::filter(p_val_adj < 0.05) %>% dplyr::mutate(
+    gene = rownames(.))`:
+! could not find function "%>%"
 ```
 
 This is how we can pull our average (scaled) pseudobulk expression
@@ -470,21 +645,31 @@ values from our seurat obj:
 ``` r
 ifnb.filtered$celltype.stim.donor_id <- paste0(ifnb.filtered$seurat_annotations, "-",
                                                ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
-Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+```
 
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
+Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 all.sig.avg.Expression.mat <- AverageExpression(ifnb.filtered, 
                          features = CD16.sig.markers$gene, 
                          layer = 'scale.data')
 ```
 
-``` output
-As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk analysis.
-This message is displayed once per session.
-```
-
 ``` error
-Error:
-! object 'CD16.sig.markers' not found
+Error in `AverageExpression()`:
+! could not find function "AverageExpression"
 ```
 
 ``` r
@@ -505,8 +690,9 @@ CD16.sig.avg.Expression.mat <- all.sig.avg.Expression.mat$RNA %>%
 ```
 
 ``` error
-Error:
-! object 'all.sig.avg.Expression.mat' not found
+Error in `all.sig.avg.Expression.mat$RNA %>% as.data.frame() %>% dplyr::select(
+    starts_with("CD16 Mono"))`:
+! could not find function "%>%"
 ```
 
 ``` r
@@ -529,8 +715,8 @@ pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
 ```
 
 ``` error
-Error:
-! object 'CD16.sig.avg.Expression.mat' not found
+Error in `loadNamespace()`:
+! there is no package called 'pheatmap'
 ```
 
 
@@ -550,8 +736,10 @@ cluster_metadata <- data.frame(
 ```
 
 ``` error
-Error:
-! object 'CD16.sig.avg.Expression.mat' not found
+Error in `data.frame(row.names = colnames(CD16.sig.avg.Expression.mat)) %>% dplyr::mutate(
+    Cell_Type = "CD16 Mono", Treatment_Group = ifelse(str_detect(row.names(.),
+    "STIM|CTRL"), str_extract(row.names(.), "STIM|CTRL")))`:
+! could not find function "%>%"
 ```
 
 ``` r
@@ -568,8 +756,8 @@ sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
 ```
 
 ``` error
-Error:
-! object 'CD16.sig.avg.Expression.mat' not found
+Error in `loadNamespace()`:
+! there is no package called 'pheatmap'
 ```
 
 ``` r
@@ -617,15 +805,45 @@ Do the same thing with significant DEGs from the sc approach. Do you see any dif
 CD16.sig.markers <- treatment.response.CD16 %>% 
   dplyr::filter(p_val_adj < 0.05) %>%
   dplyr::mutate(gene = rownames(.))
+```
 
+``` error
+Error in `treatment.response.CD16 %>% dplyr::filter(p_val_adj < 0.05) %>% dplyr::mutate(
+    gene = rownames(.))`:
+! could not find function "%>%"
+```
+
+``` r
 ifnb.filtered$celltype.stim.donor_id <- paste0(ifnb.filtered$seurat_annotations, "-",
                                                ifnb.filtered$stim, "-", ifnb.filtered$donor_id)
-Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+```
 
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
+Idents(ifnb.filtered) <- "celltype.stim.donor_id"
+```
+
+``` error
+Error:
+! object 'ifnb.filtered' not found
+```
+
+``` r
 all.sig.avg.Expression.mat <- AverageExpression(ifnb.filtered, 
                          features = CD16.sig.markers$gene, 
                          layer = 'scale.data')
+```
 
+``` error
+Error in `AverageExpression()`:
+! could not find function "AverageExpression"
+```
+
+``` r
 ## As of Seurat v5, we recommend using AggregateExpression to perform pseudo-bulk analysis.
 ## This message is displayed once per session.
 
@@ -635,7 +853,15 @@ all.sig.avg.Expression.mat <- AverageExpression(ifnb.filtered,
 CD16.sig.avg.Expression.mat <- all.sig.avg.Expression.mat$RNA %>%
   as.data.frame() %>%
   dplyr::select(starts_with("CD16 Mono"))
+```
 
+``` error
+Error in `all.sig.avg.Expression.mat$RNA %>% as.data.frame() %>% dplyr::select(
+    starts_with("CD16 Mono"))`:
+! could not find function "%>%"
+```
+
+``` r
 # View(CD16.sig.avg.Expression.mat)
 
 pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
@@ -648,7 +874,10 @@ pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          height = 20)
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-20-1.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error in `loadNamespace()`:
+! there is no package called 'pheatmap'
+```
 
 ``` r
 cluster_metadata <- data.frame(
@@ -658,7 +887,16 @@ cluster_metadata <- data.frame(
     Cell_Type = "CD16 Mono",
     Treatment_Group = ifelse(str_detect(row.names(.), "STIM|CTRL"), 
                       str_extract(row.names(.), "STIM|CTRL")))
+```
 
+``` error
+Error in `data.frame(row.names = colnames(CD16.sig.avg.Expression.mat)) %>% dplyr::mutate(
+    Cell_Type = "CD16 Mono", Treatment_Group = ifelse(str_detect(row.names(.),
+    "STIM|CTRL"), str_extract(row.names(.), "STIM|CTRL")))`:
+! could not find function "%>%"
+```
+
+``` r
 sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          cluster_rows = TRUE,
          show_rownames = FALSE,
@@ -669,11 +907,21 @@ sig.DEG.heatmap <- pheatmap::pheatmap(CD16.sig.avg.Expression.mat,
          fontsize_row = 10, 
          height = 20,
          annotation_names_col = FALSE)
+```
 
+``` error
+Error in `loadNamespace()`:
+! there is no package called 'pheatmap'
+```
+
+``` r
 sig.DEG.heatmap
 ```
 
-<img src="fig/section3-rendered-unnamed-chunk-20-2.png" alt="" style="display: block; margin: auto;" />
+``` error
+Error:
+! object 'sig.DEG.heatmap' not found
+```
 :::::
 
 :::::
