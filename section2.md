@@ -25,7 +25,7 @@ exercises: 2
 
 ``` error
 Error in `library()`:
-! there is no package called 'future'
+! there is no package called 'DESeq2'
 ```
 
 
@@ -35,8 +35,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -46,8 +46,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", group.by = "stim")
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -61,8 +61,14 @@ markers.cluster.4 <- FindConservedMarkers(ifnb.filtered, ident.1 = 4,
 ```
 
 ``` error
-Error in `FindConservedMarkers()`:
-! could not find function "FindConservedMarkers"
+Error:
+! Please install the metap package to use FindConservedMarkers.
+This can be accomplished with the following commands: 
+----------------------------------------
+install.packages('BiocManager')
+BiocManager::install('multtest')
+install.packages('metap')
+----------------------------------------
 ```
 
 ``` r
@@ -95,8 +101,8 @@ FeaturePlot(ifnb.filtered, reduction = "umap.cca",
 ```
 
 ``` error
-Error in `FeaturePlot()`:
-! could not find function "FeaturePlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -114,8 +120,8 @@ ifnb.filtered <- RenameIdents(ifnb.filtered, '4' = 'CD16 Mono') # Let's rename c
 ```
 
 ``` error
-Error in `RenameIdents()`:
-! could not find function "RenameIdents"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -130,8 +136,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) +
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -158,8 +164,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T)
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -194,8 +200,8 @@ ifnb.v4 <- JoinLayers(ifnb.filtered)
 ```
 
 ``` error
-Error in `JoinLayers()`:
-! could not find function "JoinLayers"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -203,8 +209,8 @@ sce.ifnb.filtered <- as.SingleCellExperiment(ifnb.v4)
 ```
 
 ``` error
-Error in `as.SingleCellExperiment()`:
-! could not find function "as.SingleCellExperiment"
+Error:
+! object 'ifnb.v4' not found
 ```
 
 ``` r
@@ -263,8 +269,8 @@ ifnb.filtered <- RunUMAP(ifnb.filtered, dims = 1:20)
 ```
 
 ``` error
-Error in `RunUMAP()`:
-! could not find function "RunUMAP"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -272,8 +278,8 @@ DimPlot(ifnb.filtered, reduction='umap.cca', group.by='SingleR.labels',  label =
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 :::::::::::::::::::::::::::::::::
@@ -309,8 +315,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca", label = T) # each cluster is now 
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -322,8 +328,8 @@ DimPlot(ifnb.filtered, reduction = "umap.cca",
 ```
 
 ``` error
-Error in `DimPlot()`:
-! could not find function "DimPlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 We'll now leverage these new identities to compare DEGs between our
@@ -336,8 +342,8 @@ treatment.response.CD16 <- FindMarkers(ifnb.filtered, ident.1 = 'CD16 Mono_STIM'
 ```
 
 ``` error
-Error in `FindMarkers()`:
-! could not find function "FindMarkers"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
@@ -359,8 +365,8 @@ FeaturePlot(ifnb.filtered, reduction = 'umap.cca',
 ```
 
 ``` error
-Error in `FeaturePlot()`:
-! could not find function "FeaturePlot"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -374,8 +380,8 @@ ifnb.treatVsCtrl.markers <- FindAllMarkers(ifnb.filtered,
 ```
 
 ``` error
-Error in `FindAllMarkers()`:
-! could not find function "FindAllMarkers"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 
@@ -402,22 +408,14 @@ top5 <- ifnb.treatVsCtrl.markers %>%
   dplyr::filter(avg_log2FC > 1) %>%
   slice_head(n = 5) %>%
   ungroup()
-```
 
-``` error
-Error in `ifnb.treatVsCtrl.markers %>% group_by(cluster) %>% dplyr::filter(avg_log2FC > 1) %>%
-    slice_head(n = 5) %>% ungroup()`:
-! could not find function "%>%"
-```
-
-``` r
 DEG.heatmap <- DoHeatmap(ifnb.filtered, features = top5$gene,
           label = FALSE)
 ```
 
 ``` error
-Error in `DoHeatmap()`:
-! could not find function "DoHeatmap"
+Error:
+! object 'ifnb.filtered' not found
 ```
 
 ``` r
