@@ -54,7 +54,7 @@ Number of edges: 522667
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9002
 Number of communities: 14
-Elapsed time: 1 seconds
+Elapsed time: 2 seconds
 ```
 
 ## Step 1: We need to import sample information for each cell from the original paper
